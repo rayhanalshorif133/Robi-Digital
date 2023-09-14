@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\GetAOCToken;
+use App\Models\GetAOCTokenResponse;
 use App\Models\ServiceProviderInfo;
 use Illuminate\Support\Facades\Http;
 
@@ -17,7 +18,7 @@ class NDTVController extends Controller
         $tokenInfos = [
             'apiKey' => $serviceProviderInfo->sp_api_key,
             'username' => $serviceProviderInfo->sp_username,
-            'spTransID' => $this->generateRandomString(6),
+            'spTransID' => $this->getSPTransID(),
             'description' => 'sdacsdc',
             'currency' => 'BDT',
             'amount' => '0.01',
@@ -36,18 +37,27 @@ class NDTVController extends Controller
         if($getAOCToken){
             $response = Http::post($serviceProviderInfo->aoc_getAOCToken_url, $tokenInfos);
             $response = json_decode($response);
+
+            GetAOCTokenResponse::create([
+                'get_aoc_token_id' => $getAOCToken->id,
+                'aocToken' => $response->data->aocToken,
+                'aocTransID' => $response->data->aocTransID,
+                'errorCode' => $response->data->errorCode,
+                'errorMessage' => $response->data->errorMessage,
+            ]);
+
             return $this->respondWithSuccess("ok", $response->data);
         }else{
             return $this->respondWithError("Something went wrong!");
         }
     }
 
-    // public function getSPTransID(){
-    //     $getSPTransID = 'B2M' . $this->generateRandomString(6);
-    //     $getSPTransID = GetAOCToken::where('spTransID', $getSPTransID)->first();
-    //     if($getSPTransID){
-    //         $this->getSPTransID();
-    //     }
-    //     return $getSPTransID;
-    // }
+    public function getSPTransID(){
+        $getSPTransID = 'B2M' . $this->generateRandomString(6);
+        $hasSPTransID = GetAOCToken::where('spTransID', $getSPTransID)->first();
+        if($hasSPTransID){ 
+            $this->getSPTransID();
+        }
+        return $getSPTransID;
+    }
 }
