@@ -18,6 +18,7 @@ class ServiceProviderInfoSeeder extends Seeder
         $serviceProviderInfo = new ServiceProviderInfo();
         $serviceProviderInfo->aoc_endpoint_url = 'https://sandbox.mife-aoc.com/api';
         $serviceProviderInfo->aoc_redirection_url = 'http://sandbox.mife-aoc.com/api/aoc?aocToken=';
+        $serviceProviderInfo->aoc_getAOCToken_url = 'https://sandbox.mife-aoc.com/api/getAOCToken';
         $serviceProviderInfo->sp_username = 'B2MYoga';
         $serviceProviderInfo->sp_api_key = 'dswdUAW5ZIDZZ7LC';
         $serviceProviderInfo->save();

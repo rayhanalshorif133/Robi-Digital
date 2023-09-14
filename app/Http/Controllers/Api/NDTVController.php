@@ -3,27 +3,21 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use GuzzleHttp\Client;
-use Illuminate\Http\Request;
+use App\Models\GetAOCToken;
+use App\Models\ServiceProviderInfo;
+use Illuminate\Support\Facades\Http;
+
 
 class NDTVController extends Controller
 {
     public function getToken()
     {
-        $curl = curl_init();
 
-        $postFields = `apiKey='scnsdnsdklksdlkmlmcksdlksdlksdlksdlksdlksdlks'`;
-        // make json string from array
-        $postFields = json_encode($postFields);
-        $client = Client::create();
-        $request = new http\Client\Request;
-        $request->setRequestUrl('https://sandbox.mife-aoc.com/api/getAOCToken');
-        $request->setRequestMethod('POST');
-        $body = new http\Message\Body;
-        $body->append(new http\QueryString(array(
-            'apiKey' => 'dswdUAW5ZIDZZ7LC',
-            'username' => 'B2MYoga',
-            'spTransID' => 'B2M123HTJJ2',
+        $serviceProviderInfo = ServiceProviderInfo::first();
+        $tokenInfos = [
+            'apiKey' => $serviceProviderInfo->sp_api_key,
+            'username' => $serviceProviderInfo->sp_username,
+            'spTransID' => $this->generateRandomString(6),
             'description' => 'sdacsdc',
             'currency' => 'BDT',
             'amount' => '0.01',
@@ -35,15 +29,25 @@ class NDTVController extends Controller
             'operator' => 'Robi',
             'taxAmount' => '0.1',
             'callbackURL' => 'https://www.google.com',
-            'contactInfo' => 'rayhanalshorif@gmail.com'
-        )));
-        $request->setBody($body);
-        $request->setOptions(array());
-        $request->setHeaders(array(
-            'Content-Type' => 'application/x-www-form-urlencoded'
-        ));
-        $client->enqueue($request)->send();
-        $response = $client->getResponse();
-        return $this->respondWithSuccess("ok", $postFields);
+            'contactInfo' => 'rayhan@b2m-tech.com',
+        ];
+
+        $getAOCToken = GetAOCToken::create($tokenInfos);
+        if($getAOCToken){
+            $response = Http::post($serviceProviderInfo->aoc_getAOCToken_url, $tokenInfos);
+            $response = json_decode($response);
+            return $this->respondWithSuccess("ok", $response->data);
+        }else{
+            return $this->respondWithError("Something went wrong!");
+        }
     }
+
+    // public function getSPTransID(){
+    //     $getSPTransID = 'B2M' . $this->generateRandomString(6);
+    //     $getSPTransID = GetAOCToken::where('spTransID', $getSPTransID)->first();
+    //     if($getSPTransID){
+    //         $this->getSPTransID();
+    //     }
+    //     return $getSPTransID;
+    // }
 }

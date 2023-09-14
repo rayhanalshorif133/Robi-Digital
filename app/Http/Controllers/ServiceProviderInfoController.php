@@ -34,6 +34,7 @@ class ServiceProviderInfoController extends Controller
         $serviceProviderInfo->aoc_redirection_url = $request->aoc_redirection_url;
         $serviceProviderInfo->sp_username = $request->sp_username;
         $serviceProviderInfo->sp_api_key = $request->sp_api_key;
+        $serviceProviderInfo->aoc_getAOCToken_url = $request->aoc_getAOCToken_url;
         $serviceProviderInfo->save();
         flash()->addSuccess('Service Provider Info updated successfully!');
         return redirect()->back();

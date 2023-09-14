@@ -11,36 +11,34 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-         // For API
-         protected function respondWithSuccess($message = '', $data = [], $code = 200)
-         {
-             return response()->json([
-                 'status'   => true,
-                 'errors'  => false,
-                 'message'  => $message,
-                 'data'     => $data
-             ], $code);
-         }
-         protected function respondWithError($message, $data = [], $code = 203)
-         {
-             return response()->json([
-                 'status'   => false,
-                 'errors'  => true,
-                 'message'  => $message,
-                 'data'     => $data
-             ], $code);
-         }
-     
-         protected function getRandomBadge()
-         {
-             $badges = [
-                 "primary",
-                 "secondary",
-                 "success",
-                 "danger",
-                 "warning",
-                 "info",
-             ];
-             return $badges[rand(0, count($badges) - 1)];
-         }
+    // For API
+    protected function respondWithSuccess($message = '', $data = [], $code = 200)
+    {
+        return response()->json([
+            'status'   => true,
+            'errors'  => false,
+            'message'  => $message,
+            'data'     => $data
+        ], $code);
+    }
+    protected function respondWithError($message, $data = [], $code = 203)
+    {
+        return response()->json([
+            'status'   => false,
+            'errors'  => true,
+            'message'  => $message,
+            'data'     => $data
+        ], $code);
+    }
+
+    protected function generateRandomString($length = 25)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
 }

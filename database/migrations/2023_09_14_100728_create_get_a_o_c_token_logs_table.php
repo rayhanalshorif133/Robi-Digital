@@ -17,8 +17,8 @@ class CreateGetAOCTokenLogsTable extends Migration
             $table->id();
             $table->bigInteger('get_aoc_token_id')->unsigned();
             $table->bigInteger('get_aoc_token_response_id')->unsigned();
-            $table->text('request_raw_data')->nullable();
-            $table->text('response_raw_data')->nullable();
+            $table->json('request_raw_data')->nullable();
+            $table->json('response_raw_data')->nullable();
             $table->timestamps();
         });
     }

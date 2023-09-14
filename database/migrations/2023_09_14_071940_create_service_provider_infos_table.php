@@ -18,6 +18,7 @@ class CreateServiceProviderInfosTable extends Migration
             $table->id();
             $table->string('aoc_endpoint_url');
             $table->string('aoc_redirection_url');
+            $table->string('aoc_getAOCToken_url');
             $table->string('sp_username');
             $table->string('sp_api_key');
             $table->timestamps();

@@ -32,16 +32,23 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="aoc_endpoint_url" class="required">Service Name</label>
+                                    <label for="aoc_endpoint_url" class="required">AOC Endpoint URL </label>
                                     <input type="text" name="aoc_endpoint_url" id="aoc_endpoint_url" required class="form-control"
-                                        placeholder="Enter Service Name" value="{{$serviceProviderInfo->aoc_endpoint_url}}">
+                                        placeholder="Enter AOC Endpoint URL" value="{{$serviceProviderInfo->aoc_endpoint_url}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="aoc_redirection_url" class="required">Service Name</label>
+                                    <label for="aoc_redirection_url" class="required">AOC Redirection URL </label>
                                     <input type="text" name="aoc_redirection_url" id="aoc_redirection_url" required class="form-control"
-                                        placeholder="Enter Service Name" value="{{$serviceProviderInfo->aoc_redirection_url}}">
+                                        placeholder="Enter AOC Redirection URL " value="{{$serviceProviderInfo->aoc_redirection_url}}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="aoc_getAOCToken_url" class="required">Get AOC Token URL</label>
+                                    <input type="text" name="aoc_getAOCToken_url" id="aoc_getAOCToken_url" required class="form-control"
+                                        placeholder="Enter Get AOC Token URL" value="{{$serviceProviderInfo->aoc_getAOCToken_url}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
