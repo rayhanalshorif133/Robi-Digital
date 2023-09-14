@@ -20,7 +20,8 @@
                     Service
                 </h3>
                 <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm"  data-toggle="modal" data-target="#service-create">Add New</button>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                        data-target="#service-create">Add New</button>
                 </div>
             </div>
 
@@ -42,6 +43,7 @@
     </div>
 
     @include('service.create')
+    @include('service.edit')
 @endsection
 
 {{-- scripts --}}
@@ -83,13 +85,78 @@
                     },
                     {
                         render: function(data, type, row) {
-                            return row.name;
-                            // return getButtons("/poll/admin", row.id);
+                            const btns = `
+                            <div class="btn-group" id="${row.id}">
+                                <button type="button" class="btn btn-outline-info serviceEditBtn" data-toggle="modal"
+                        data-target="#service-edit">
+                                    <i class="fas fa-pen"></i>
+                                    </button>
+                                <button type="button" class="btn btn-outline-danger serviceDeleteBtn">
+                                    <i class="fa-solid fa-trash"></i>
+                                    </button>
+                            </div>
+                            `;
+
+                            return btns;
                         },
                         targets: 0,
                     },
                 ]
             });
+            serviceEditBtnHandler();
+            serviceDeleteBtnHandler();
         });
+
+        const serviceEditBtnHandler = () => {
+            $(document).on('click', '.serviceEditBtn', function() {
+                const id = $(this).parent().attr('id');
+                console.log(id);
+                axios.get(`/service/${id}/edit`)
+                .then(function(response) {
+                    const data = response.data.data;
+                    $("#serviceUpdateFrom").attr('action', `/service/${id}`);
+                    $("#serviceUpdateFrom input[name='name']").val(data.name);
+                    $("#serviceUpdateFrom select[name='type']").val(data.type);
+                    $("#serviceUpdateFrom select[name='validity']").val(data.validity);
+                    $("#service-update").modal('show');
+                });
+            });
+        };
+        const serviceDeleteBtnHandler = () => {
+            $(document).on('click', '.serviceDeleteBtn', function() {
+                const id = $(this).parent().attr('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axios.delete(`/service/${id}`)
+                            .then(function(response) {
+                                console.log(response);
+                                table.ajax.reload();
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                            });
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+                    }else{
+                        Swal.fire(
+                            'Cancelled!',
+                            'Your file is safe.',
+                            'error'
+                        )
+                    }
+                })
+            });
+        };
     </script>
 @endpush
