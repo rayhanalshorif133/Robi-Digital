@@ -15,3 +15,7 @@
     color: #000;
     font-weight: normal;
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}

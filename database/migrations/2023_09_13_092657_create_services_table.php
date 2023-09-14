@@ -1,6 +1,6 @@
 <?php
 
-use Database\Seeders\DatabaseSeeder;
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,11 +20,14 @@ class CreateServicesTable extends Migration
             $table->string('name');
             $table->string('type')->enum('subscription', 'on-demand')->default('subscription');
             $table->string('validity')->enum('daily', 'weekly', 'monthly')->default('daily');
+            $table->string('purchase_category_code')->nullable();
+            $table->string('reference_code')->nullable();
+            $table->string('channel')->nullable();
+            $table->string('on_behalf_of')->nullable();
             $table->timestamps();
         });
 
-        $dbSeeder = new DatabaseSeeder();
-        $dbSeeder->run();
+      
     }
 
     /**

@@ -44,6 +44,7 @@
 
     @include('service.create')
     @include('service.edit')
+    @include('service.show')
 @endsection
 
 {{-- scripts --}}
@@ -56,6 +57,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: url,
+                ordering: false,
                 columns: [{
                         render: function(data, type, row) {
                             return row.name;
@@ -87,10 +89,14 @@
                         render: function(data, type, row) {
                             const btns = `
                             <div class="btn-group" id="${row.id}">
+                                    <button type="button" class="btn btn-outline-success serviceShowBtn" data-toggle="modal"
+                                    data-target="#service-show">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                                 <button type="button" class="btn btn-outline-info serviceEditBtn" data-toggle="modal"
-                        data-target="#service-edit">
+                                    data-target="#service-edit">
                                     <i class="fas fa-pen"></i>
-                                    </button>
+                                </button>
                                 <button type="button" class="btn btn-outline-danger serviceDeleteBtn">
                                     <i class="fa-solid fa-trash"></i>
                                     </button>
@@ -105,6 +111,7 @@
             });
             serviceEditBtnHandler();
             serviceDeleteBtnHandler();
+            serviceShowBtnHandaler();
         });
 
         const serviceEditBtnHandler = () => {
@@ -118,7 +125,32 @@
                     $("#serviceUpdateFrom input[name='name']").val(data.name);
                     $("#serviceUpdateFrom select[name='type']").val(data.type);
                     $("#serviceUpdateFrom select[name='validity']").val(data.validity);
+                    $("#serviceUpdateFrom input[name='purchase_category_code']").val(data.purchase_category_code);
+                    $("#serviceUpdateFrom input[name='reference_code']").val(data.reference_code);
+                    $("#serviceUpdateFrom input[name='channel']").val(data.channel);
+                    $("#serviceUpdateFrom input[name='on_behalf_of']").val(data.on_behalf_of);
+                    
                     $("#service-update").modal('show');
+                });
+            });
+        };
+        
+        const serviceShowBtnHandaler = () => {
+            $(document).on('click', '.serviceShowBtn', function() {
+                const id = $(this).parent().attr('id');
+                console.log(id);
+                axios.get(`/service/${id}`)
+                .then(function(response) {
+                    const data = response.data.data;
+                    $(".show_service_name").text(data.name);
+                    $(".show_service_key").text(data.service_key);
+                    $(".show_service_type").text(data.type);
+                    $(".show_service_validity").text(data.validity);
+                    $(".show_purchase_category_code").text(data.purchase_category_code);
+                    $(".show_reference_code").text(data.reference_code);
+                    $(".show_channel").text(data.channel);
+                    $(".show_on_behalf_of").text(data.on_behalf_of);               
+                    $("#service-show").modal('show');
                 });
             });
         };
@@ -137,7 +169,6 @@
                     if (result.isConfirmed) {
                         axios.delete(`/service/${id}`)
                             .then(function(response) {
-                                console.log(response);
                                 table.ajax.reload();
                             })
                             .catch(function(error) {

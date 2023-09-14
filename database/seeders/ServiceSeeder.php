@@ -21,6 +21,10 @@ class ServiceSeeder extends Seeder
             $service->name = 'Service ' . $i;
             $service->type = 'subscription';
             $service->validity = 'daily';
+            $service->purchase_category_code = 'Game';
+            $service->reference_code = 'Game';
+            $service->channel = 'WEB';
+            $service->on_behalf_of = 'Apigate_AOC-B2M';
             $service->save();
         }
 

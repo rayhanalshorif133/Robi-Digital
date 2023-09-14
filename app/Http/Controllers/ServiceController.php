@@ -18,7 +18,7 @@ class ServiceController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Service::orderBy('created_at', 'desc')->get();
+            $query = Service::orderBy('id', 'desc')->get();
             return DataTables::of($query)
                 ->rawColumns(['action'])
                 ->toJson();
@@ -33,6 +33,10 @@ class ServiceController extends Controller
             'name' => 'required',
             'type' => 'required',
             'validity' => 'required',
+            'purchase_category_code' => 'required',
+            'reference_code' => 'required',
+            'channel' => 'required',
+            'on_behalf_of' => 'required',
         ]);
 
 
@@ -40,13 +44,17 @@ class ServiceController extends Controller
             flash()->addError($isValidator->errors()->first());
             return redirect()->route('service.index');
         }
-        
+
         try {
             $service = new Service();
             $service->service_key = $this->getServiceKey();
             $service->name = $request->name;
             $service->type = $request->type;
             $service->validity = $request->validity;
+            $service->purchase_category_code = $request->purchase_category_code;
+            $service->reference_code = $request->reference_code;
+            $service->channel = $request->channel;
+            $service->on_behalf_of = $request->on_behalf_of;
             $service->save();
             flash()->addSuccess('Service created successfully!');
         } catch (\Throwable $th) {
@@ -56,6 +64,13 @@ class ServiceController extends Controller
     }
 
     // edit
+    public function show($id)
+    {
+        $service = Service::find($id);
+        return $this->respondWithSuccess('Service fetched successfully!', $service);
+
+    }
+    
     public function edit($id)
     {
         $service = Service::find($id);
@@ -63,7 +78,8 @@ class ServiceController extends Controller
     }
 
 
-    public function getServiceKey() {
+    public function getServiceKey()
+    {
         $key = $this->generateRandomString(6);
         $service = Service::where('service_key', $key)->first();
         if ($service) {
@@ -81,6 +97,10 @@ class ServiceController extends Controller
             'name' => 'required',
             'type' => 'required',
             'validity' => 'required',
+            'purchase_category_code' => 'required',
+            'reference_code' => 'required',
+            'channel' => 'required',
+            'on_behalf_of' => 'required',
         ]);
 
 
@@ -96,6 +116,10 @@ class ServiceController extends Controller
             $service->name = $request->name;
             $service->type = $request->type;
             $service->validity = $request->validity;
+            $service->purchase_category_code = $request->purchase_category_code;
+            $service->reference_code = $request->reference_code;
+            $service->channel = $request->channel;
+            $service->on_behalf_of = $request->on_behalf_of;
             $service->save();
             flash()->addSuccess('Service updated successfully!');
         } catch (\Throwable $th) {
@@ -121,7 +145,8 @@ class ServiceController extends Controller
     }
 
 
-    public function generateRandomString($length = 25) {
+    public function generateRandomString($length = 25)
+    {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';

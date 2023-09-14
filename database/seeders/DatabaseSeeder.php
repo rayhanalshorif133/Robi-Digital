@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         new UserAndRoleSeeder();
         new ServiceSeeder();
+        new ServiceProviderInfoSeeder();
     }
 }

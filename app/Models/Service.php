@@ -16,5 +16,9 @@ class Service extends Model
         'name',
         'type',
         'validity',
+        'purchase_category_code',
+        'reference_code',
+        'channel',
+        'on_behalf_of',
     ];
 }
