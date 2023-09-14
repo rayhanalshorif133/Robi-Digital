@@ -15,7 +15,7 @@ class ServiceSeeder extends Seeder
     public function run()
     {
 
-        for ($i = 0; $i < 200; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $service = new Service();
             $service->service_key = $this->generateRandomString(5);
             $service->name = 'Service ' . $i;
