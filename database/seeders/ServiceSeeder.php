@@ -14,12 +14,15 @@ class ServiceSeeder extends Seeder
 
     public function run()
     {
-        $service = new Service();
-        $service->service_key = $this->generateRandomString(5);
-        $service->name = 'Service 1';
-        $service->type = 'subscription';
-        $service->validity = 'daily';
-        $service->save();
+
+        for ($i = 0; $i < 200; $i++) {
+            $service = new Service();
+            $service->service_key = $this->generateRandomString(5);
+            $service->name = 'Service ' . $i;
+            $service->type = 'subscription';
+            $service->validity = 'daily';
+            $service->save();
+        }
 
     }
 

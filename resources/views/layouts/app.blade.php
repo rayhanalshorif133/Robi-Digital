@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Dashboard</title>
+    <title> {{ env('APP_NAME') }} | Dashboard</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('assets/dist/css/adminlte.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
     <!-- Daterange picker -->
@@ -29,6 +30,11 @@
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/summernote-bs4.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+    <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+   
 
 </head>
 
@@ -51,24 +57,23 @@
 
         <div class="content-wrapper">
             <div class="content-header">
-              <div class="container-fluid">
-                <div class="row mb-2">
-                  @yield('breadcrumb')
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        @yield('breadcrumb')
+                    </div>
                 </div>
-              </div>
             </div>
             <!-- /.content-header -->
-        
+
             <!-- Main content -->
             @yield('content')
             <!-- /.content -->
         </div>
-        
+
         <!-- Content Wrapper. Contains page content -->
-        
+
         <!-- /.content-wrapper -->
         @include('layouts._partials.footer')
-        
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
@@ -79,39 +84,41 @@
     <!-- ./wrapper -->
 
     <!-- jQuery -->
-    <script src="{{asset('assets/plugins/jquery/jquery.min.js')}}"></script>
     <!-- jQuery UI 1.11.4 -->
-    <script src="{{asset('assets/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
         $.widget.bridge('uibutton', $.ui.button)
     </script>
     <!-- Bootstrap 4 -->
-    <script src="{{asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- ChartJS -->
-    <script src="{{asset('assets/plugins/chart.js/Chart.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/chart.js/Chart.min.js') }}"></script>
     <!-- Sparkline -->
-    <script src="{{asset('assets/plugins/sparklines/sparkline.js')}}"></script>
+    <script src="{{ asset('assets/plugins/sparklines/sparkline.js') }}"></script>
     <!-- JQVMap -->
-    <script src="{{asset('assets/plugins/jqvmap/jquery.vmap.min.js')}}"></script>
-    <script src="{{asset('assets/plugins/jqvmap/maps/jquery.vmap.usa.js')}}"></script>
+    <script src="{{ asset('assets/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
     <!-- jQuery Knob Chart -->
-    <script src="{{asset('assets/plugins/jquery-knob/jquery.knob.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
     <!-- daterangepicker -->
-    <script src="{{asset('assets/plugins/moment/moment.min.js')}}"></script>
-    <script src="{{asset('assets/plugins/daterangepicker/daterangepicker.js')}}"></script>
+    <script src="{{ asset('assets/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <!-- Tempusdominus Bootstrap 4 -->
-    <script src="{{asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <!-- Summernote -->
-    <script src="{{asset('assets/plugins/summernote/summernote-bs4.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
     <!-- overlayScrollbars -->
-    <script src="{{asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
+    <script src="{{ asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
     <!-- AdminLTE App -->
-    <script src="{{asset('assets/dist/js/adminlte.js')}}"></script>
+    <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="{{asset('assets/dist/js/demo.js')}}"></script>
+    {{-- <script src="{{ asset('assets/dist/js/demo.js') }}"></script> --}}
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{asset('assets/dist/js/pages/dashboard.js')}}"></script>
+    <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
+
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
 
     @stack('scripts')
 </body>
