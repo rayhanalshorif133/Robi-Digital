@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\GetAOCToken;
+use App\Models\GetAOCTokenLog;
 use App\Models\GetAOCTokenResponse;
 use App\Models\ServiceProviderInfo;
 use Illuminate\Support\Facades\Http;
@@ -38,12 +39,19 @@ class NDTVController extends Controller
             $response = Http::post($serviceProviderInfo->aoc_getAOCToken_url, $tokenInfos);
             $response = json_decode($response);
 
-            GetAOCTokenResponse::create([
+            $aocTokenResponse = GetAOCTokenResponse::create([
                 'get_aoc_token_id' => $getAOCToken->id,
                 'aocToken' => $response->data->aocToken,
                 'aocTransID' => $response->data->aocTransID,
                 'errorCode' => $response->data->errorCode,
                 'errorMessage' => $response->data->errorMessage,
+            ]);
+
+            GetAOCTokenLog::create([
+                'get_aoc_token_id' => $getAOCToken->id,
+                'get_aoc_token_response_id' => $aocTokenResponse->id,
+                'request_raw_data' => json_encode($tokenInfos),
+                'response_raw_data' => json_encode($response),
             ]);
 
             return $this->respondWithSuccess("ok", $response->data);
