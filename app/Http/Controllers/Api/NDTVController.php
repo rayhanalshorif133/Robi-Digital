@@ -51,7 +51,7 @@ class NDTVController extends Controller
                 'get_aoc_token_id' => $getAOCToken->id,
                 'get_aoc_token_response_id' => $aocTokenResponse->id,
                 'request_raw_data' => json_encode($tokenInfos),
-                'response_raw_data' => json_encode($response),
+                'response_raw_data' => json_encode($response->data),
             ]);
 
             return $this->respondWithSuccess("ok", $response->data);
