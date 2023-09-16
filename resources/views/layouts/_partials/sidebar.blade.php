@@ -73,6 +73,14 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('token.index') }}" class="nav-link @if ($routeName == 'token.index') active @endif">
+                        <i class="nav-icon fas fa-tools"></i>
+                        <p>
+                            Token
+                        </p>
+                    </a>
+                </li>
                 {{-- <li class="nav-header">MISCELLANEOUS</li> --}}
             </ul>
         </nav>
