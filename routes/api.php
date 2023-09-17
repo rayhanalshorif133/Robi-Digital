@@ -19,4 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('getToken', [NDTVController::class, 'getToken'])->name('getToken');
+Route::get('getToken/{description?}', [NDTVController::class, 'getToken'])->name('getToken');

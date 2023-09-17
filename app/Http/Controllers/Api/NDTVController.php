@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Http;
 
 class NDTVController extends Controller
 {
-    public function getToken()
+    public function getToken($description = 'no description')
     {
 
         $serviceProviderInfo = ServiceProviderInfo::first();
@@ -20,7 +20,7 @@ class NDTVController extends Controller
             'apiKey' => $serviceProviderInfo->sp_api_key,
             'username' => $serviceProviderInfo->sp_username,
             'spTransID' => $this->getSPTransID(),
-            'description' => 'sdacsdc',
+            'description' => $description,
             'currency' => 'BDT',
             'amount' => '0.01',
             'onBehalfOf' => 'Apigate_AOC-B2M',
@@ -54,7 +54,10 @@ class NDTVController extends Controller
                 'response_raw_data' => json_encode($response->data),
             ]);
 
-            return $this->respondWithSuccess("ok", $response->data);
+            $redirectTo = $serviceProviderInfo->aoc_redirection_url . $response->data->aocToken;
+
+            return Http::get($redirectTo);
+            
         }else{
             return $this->respondWithError("Something went wrong!");
         }
