@@ -8,6 +8,7 @@ use App\Models\ChargeStatusResponseRaw;
 use App\Models\GetAOCToken;
 use App\Models\GetAOCTokenLog;
 use App\Models\GetAOCTokenResponse;
+use App\Models\HitLog;
 use App\Models\Service;
 use App\Models\ServiceProviderInfo;
 use Illuminate\Http\Request;
@@ -80,11 +81,23 @@ class NDTVController extends Controller
                 'response_raw_data' => json_encode($response->data),
             ]);
 
-            return $this->respondWithSuccess("Token successfully fetched", [
+
+            $sendData = [
                 'aocTransID' => $response->data->aocTransID,
                 'spTransID' => $getAOCToken->spTransID,
                 'redirectURL' => env('APP_URL') . '/api/redirect/' . $response->data->aocTransID,
-            ]);
+            ];
+
+            // HitLog
+            $hitLog = new HitLog();
+            $hitLog->get_aoc_token_id = $getAOCToken->id;
+            $hitLog->keyword = $keyword;
+            $hitLog->date = date('Y-m-d');
+            $hitLog->time = date('H:i:s');
+            $hitLog->postBack_send_data = json_encode($sendData);
+            $hitLog->save();
+
+            return $this->respondWithSuccess("Token successfully fetched", $sendData);
             
         } else {
             return $this->respondWithError("Something went wrong!");

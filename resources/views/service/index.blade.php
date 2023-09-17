@@ -116,6 +116,11 @@
             serviceEditBtnHandler();
             serviceDeleteBtnHandler();
             serviceShowBtnHandaler();
+
+            // get url
+            var searchValue = window.location.href?.split('?')[1]?.split('=')[1] ? window.location.href?.split('?')[1]?.split('=')[1] : '';
+            $('#serviceTableId_filter input').val(searchValue);
+            table.search(searchValue).draw();
         });
 
         const serviceEditBtnHandler = () => {

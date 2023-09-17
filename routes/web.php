@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HitLogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ServiceProviderInfoController;
@@ -34,8 +35,11 @@ Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 Route::resource('service', ServiceController::class);
 Route::resource('service-provider-info', ServiceProviderInfoController::class);
 
-Route::prefix('token')
-    ->name('token.')
+Route::prefix('hit_log')
+    ->name('hit_log.')
     ->group(function () {
-        Route::get('/', [TokenController::class, 'index'])->name('index');
+        Route::get('sent/', [HitLogController::class, 'sent'])->name('sent');
+        Route::get('received/', [HitLogController::class, 'received'])->name('received');
     });
+
+

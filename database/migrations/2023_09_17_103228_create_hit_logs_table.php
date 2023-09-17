@@ -15,7 +15,11 @@ class CreateHitLogsTable extends Migration
     {
         Schema::create('hit_logs', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreignId('get_aoc_token_id')->constrained('get_a_o_c_tokens');
+            $table->string('keyword');
+            $table->text('postBack_send_data');
+            $table->string('date');
+            $table->string('time');
         });
     }
 
