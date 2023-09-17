@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CallBackController;
 use App\Http\Controllers\Api\NDTVController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,13 +20,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::get('getToken/{keyword?}', [NDTVController::class, 'getTokenMethodGET'])->name('getToken');
-// Route::post('getToken', [NDTVController::class, 'getTokenMethodPost'])->name('getToken');
-
 // getToken Method only supports GET and POST
 Route::match(['get', 'post'], 'getToken/{keyword?}', [NDTVController::class, 'getToken'])->name('getToken');
 
-Route::post('callback', [NDTVController::class, 'callback'])->name('callback');
+Route::post('callback', [CallBackController::class, 'callback'])->name('callback');
+
+
 Route::get('chargeWithTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'chargeWithTAC'])->name('chargeWithTAC');
 Route::get('requestNewTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'requestNewTAC'])->name('requestNewTAC');
 Route::post('directCharge/', [NDTVController::class, 'directCharge'])->name('directCharge');

@@ -123,21 +123,5 @@ class NDTVController extends Controller
         return $this->respondWithSuccess("Charge with TAC", $response);
     }
 
-    public function callback(Request $request)
-    {
-        // "data": {
-        //     "transactionOperationStatus": "Charged",
-        //     "totalAmountCharged": "5.00",
-        //     "msisdn": "+60191234567",
-        //     "aocTransID": "12345678",
-        //     "oriAocTransId": "T387487",
-        //     "clientCorrelator": "12345678901234567",
-        //     "expiryDate": "22-07-2020",
-        //     "subscriptionID": "Sub1",
-        //     "chargeMode": "split",
-        //     "errorCode": "00",
-        //     "errorMessage": ""
-        //     }
-        return $this->respondWithSuccess("Callback", $request->all());
-    }
+    
 }
