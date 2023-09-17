@@ -26,10 +26,33 @@ class ServiceSeeder extends Seeder
             $service->on_behalf_of = 'Apigate_AOC-B2M';
             $service->save();
 
+            // for ($i=0; $i < 300; $i++) { 
+            //     $service = new Service();
+            //     $service->name = 'NDTV Yoga';
+            //     $service->type = 'subscription';
+            //     $service->keyword = $this->getKeyword();
+            //     $service->validity = 'daily';
+            //     $service->purchase_category_code = 'Game';
+            //     $service->reference_code = 'Game';
+            //     $service->channel = 'WEB';
+            //     $service->on_behalf_of = 'Apigate_AOC-B2M';
+            //     $service->save();
+            // }
+
+    }
+
+    public function getKeyword()
+    {
+        $keyword = $this->generateRandomString(10);
+        $service = Service::where('keyword', $keyword)->first();
+        if($service){
+            $this->getKeyword();
+        }
+        return $keyword;
     }
 
     function generateRandomString($length = 25) {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {

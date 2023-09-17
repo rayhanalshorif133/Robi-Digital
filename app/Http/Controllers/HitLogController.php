@@ -16,6 +16,11 @@ class HitLogController extends Controller
                 ->rawColumns(['action'])
                 ->toJson();
         }
-        return view('hit_log.index');
+        return view('hit_log.sent');
+    }
+    
+    public function received()
+    {
+        dd('received');
     }
 }
