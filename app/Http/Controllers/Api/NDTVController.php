@@ -52,6 +52,7 @@ class NDTVController extends Controller
             'subscriptionDuration' => $subscriptionDuration,
             'unSubURL' => $unSubURL,
             'callbackURL' => $callback,
+            'msisdn' => '+8801818401065',
             'currency' => 'BDT',
             'amount' => '0.01',
             'operator' => 'Robi',
@@ -81,6 +82,7 @@ class NDTVController extends Controller
 
             return $this->respondWithSuccess("Token successfully fetched", [
                 'aocTransID' => $response->data->aocTransID,
+                'spTransID' => $getAOCToken->spTransID,
                 'redirectURL' => env('APP_URL') . '/api/redirect/' . $response->data->aocTransID,
             ]);
             
@@ -93,7 +95,7 @@ class NDTVController extends Controller
         $serviceProviderInfo = ServiceProviderInfo::first();
         $getAOCTokenResponse = GetAOCTokenResponse::where('aocTransID', $aocTransID)->first();
         $redirectTo = $serviceProviderInfo->aoc_redirection_url . $getAOCTokenResponse->aocToken;
-        return Http::get($redirectTo);
+        return redirect($redirectTo);
     }
 
     public function getSubscriptionID()
