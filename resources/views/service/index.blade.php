@@ -133,6 +133,7 @@
                     $("#serviceUpdateFrom input[name='reference_code']").val(data.reference_code);
                     $("#serviceUpdateFrom input[name='channel']").val(data.channel);
                     $("#serviceUpdateFrom input[name='on_behalf_of']").val(data.on_behalf_of);
+                    $("#serviceUpdateFrom input[name='keyword']").val(data.keyword);
                     
                     $("#service-update").modal('show');
                 });

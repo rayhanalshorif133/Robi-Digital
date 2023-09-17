@@ -36,6 +36,7 @@ class ServiceController extends Controller
             'purchase_category_code' => 'required',
             'reference_code' => 'required',
             'channel' => 'required',
+            'keyword' => 'required|unique:services',
             'on_behalf_of' => 'required',
         ]);
 
@@ -47,7 +48,6 @@ class ServiceController extends Controller
 
         try {
             $service = new Service();
-            $service->service_key = $this->getServiceKey();
             $service->name = $request->name;
             $service->keyword = $request->keyword;
             $service->type = $request->type;
@@ -59,7 +59,7 @@ class ServiceController extends Controller
             $service->save();
             flash()->addSuccess('Service created successfully!');
         } catch (\Throwable $th) {
-            flash()->addError('Something went wrong!');
+            flash()->addError($th->getMessage());
         }
         return redirect()->route('service.index');
     }
@@ -97,13 +97,14 @@ class ServiceController extends Controller
         $isValidator = Validator::make($request->all(), [
             'name' => 'required',
             'type' => 'required',
-            'keyword' => 'required',
+            'keyword' => 'required|unique:services,keyword,' . $id . ',id',
             'validity' => 'required',
             'purchase_category_code' => 'required',
             'reference_code' => 'required',
             'channel' => 'required',
             'on_behalf_of' => 'required',
         ]);
+
 
 
         if ($isValidator->fails()) {
