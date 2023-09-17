@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ChargeStatusResponse;
+use App\Models\ChargeStatusResponseRaw;
 use App\Models\GetAOCToken;
 use App\Models\GetAOCTokenLog;
 use App\Models\GetAOCTokenResponse;
@@ -77,11 +79,21 @@ class NDTVController extends Controller
                 'response_raw_data' => json_encode($response->data),
             ]);
 
-            $redirectTo = $serviceProviderInfo->aoc_redirection_url . $response->data->aocToken;
-            return Http::get($redirectTo);
+            return $this->respondWithSuccess("Token successfully fetched", [
+                'aocTransID' => $response->data->aocTransID,
+                'redirectURL' => env('APP_URL') . '/api/redirect/' . $response->data->aocTransID,
+            ]);
+            
         } else {
             return $this->respondWithError("Something went wrong!");
         }
+    }
+    
+    public function redirect($aocTransID){
+        $serviceProviderInfo = ServiceProviderInfo::first();
+        $getAOCTokenResponse = GetAOCTokenResponse::where('aocTransID', $aocTransID)->first();
+        $redirectTo = $serviceProviderInfo->aoc_redirection_url . $getAOCTokenResponse->aocToken;
+        return Http::get($redirectTo);
     }
 
     public function getSubscriptionID()
@@ -104,23 +116,34 @@ class NDTVController extends Controller
         return $getSPTransID;
     }
 
-    public function chargeWithTAC($aocTransID, $msisdn, $tac)
+    public function chargeStatus($aocTransID)
     {
         $serviceProviderInfo = ServiceProviderInfo::first();
         $parameters = [
             'apiKey' => $serviceProviderInfo->sp_api_key,
             'aocTransID' => $aocTransID,
-            'username' => $serviceProviderInfo->sp_username,
-            'msisdn' => $msisdn,
-            'tac' => $tac,
-            'transactionOperationStatus' => 'Charged',
-            'totalAmountCharged' => 0.01,
+            'username' => $serviceProviderInfo->sp_username
         ];
-        $url = $serviceProviderInfo->aoc_chargeWithTAC_url . '/api/chargeWithTAC';
-        $response = Http::post($url);
+        $url = $serviceProviderInfo->aoc_endpoint_url . '/chargeStatus';
+        $response = Http::post($url,$parameters);
         $response = json_decode($response);
 
-        return $this->respondWithSuccess("Charge with TAC", $response);
+        $chargeStatus = new ChargeStatusResponse();
+        $chargeStatus->aocTransID = $aocTransID;
+        $chargeStatus->chargeMode = $response->data->chargeMode;
+        $chargeStatus->transactionOperationStatus = $response->data->transactionOperationStatus;
+        $chargeStatus->totalAmountCharged = $response->data->totalAmountCharged;
+        $chargeStatus->clientCorrelator = $response->data->clientCorrelator;
+        $chargeStatus->msisdn = $response->data->msisdn;
+        $chargeStatus->errorCode = $response->data->errorCode;
+        $chargeStatus->errorMessage = $response->data->errorMessage;
+        $chargeStatus->save();
+
+        ChargeStatusResponseRaw::create([
+            'charge_status_response_id' => $chargeStatus->id,
+            'data' => json_encode($response->data),
+        ]);
+        return $this->respondWithSuccess("Charge status", $response);
     }
 
     

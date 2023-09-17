@@ -23,17 +23,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // getToken Method only supports GET and POST
 Route::match(['get', 'post'], 'getToken/{keyword?}', [NDTVController::class, 'getToken'])->name('getToken');
 
+Route::get('redirect/{aocTransID}', [NDTVController::class, 'redirect'])->name('redirect');
+
 Route::post('callback', [CallBackController::class, 'callback'])->name('callback');
+Route::get('chargeStatus/{aocTransID}', [NDTVController::class, 'chargeStatus'])->name('chargeStatus');
 
 
-Route::get('chargeWithTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'chargeWithTAC'])->name('chargeWithTAC');
-Route::get('requestNewTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'requestNewTAC'])->name('requestNewTAC');
-Route::post('directCharge/', [NDTVController::class, 'directCharge'])->name('directCharge');
-Route::get('requestDirectChargeTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'requestDirectChargeTAC'])->name('requestDirectChargeTAC');
-Route::post('directChargeWithStepDown/', [NDTVController::class, 'directChargeWithStepDown'])->name('directChargeWithStepDown');
-Route::get('chargeStatus/{aocTransID}/{msisdn}/{status}', [NDTVController::class, 'chargeStatus'])->name('chargeStatus');
-Route::post('renewSubscription/', [NDTVController::class, 'renewSubscription'])->name('renewSubscription');
-Route::post('cancelSubscription/', [NDTVController::class, 'cancelSubscription'])->name('cancelSubscription');
-Route::post('subscriptionStatus/', [NDTVController::class, 'subscriptionStatus'])->name('subscriptionStatus');
-Route::post('refund/', [NDTVController::class, 'refund'])->name('refund');
-Route::post('refundStatus/', [NDTVController::class, 'refundStatus'])->name('refundStatus');
+// Route::get('chargeWithTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'chargeWithTAC'])->name('chargeWithTAC');
+// Route::get('requestNewTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'requestNewTAC'])->name('requestNewTAC');
+// Route::post('directCharge/', [NDTVController::class, 'directCharge'])->name('directCharge');
+// Route::get('requestDirectChargeTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'requestDirectChargeTAC'])->name('requestDirectChargeTAC');
+// Route::post('directChargeWithStepDown/', [NDTVController::class, 'directChargeWithStepDown'])->name('directChargeWithStepDown');
+// Route::post('renewSubscription/', [NDTVController::class, 'renewSubscription'])->name('renewSubscription');
+// Route::post('cancelSubscription/', [NDTVController::class, 'cancelSubscription'])->name('cancelSubscription');
+// Route::post('subscriptionStatus/', [NDTVController::class, 'subscriptionStatus'])->name('subscriptionStatus');
+// Route::post('refund/', [NDTVController::class, 'refund'])->name('refund');
+// Route::post('refundStatus/', [NDTVController::class, 'refundStatus'])->name('refundStatus');
