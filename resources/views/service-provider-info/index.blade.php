@@ -15,7 +15,7 @@
 @endsection
 
 @section('content')
-    <div class="container">
+    <div class="px-2">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">

@@ -66,6 +66,13 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label for="keyword" class="required">Keyword</label>
+                                    <input type="text" name="keyword" id="keyword" required class="form-control"
+                                        placeholder="Enter Keyword Name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label for="on_behalf_of" class="required">On Behalf Of</label>
                                     <input type="text" name="on_behalf_of" id="on_behalf_of" required class="form-control"
                                         placeholder="Enter Service Name">

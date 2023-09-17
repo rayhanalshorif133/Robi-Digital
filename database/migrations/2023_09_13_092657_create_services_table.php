@@ -17,6 +17,7 @@ class CreateServicesTable extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('keyword');
             $table->string('type')->enum('subscription', 'on-demand')->default('subscription');
             $table->string('validity')->enum('daily', 'weekly', 'monthly')->default('daily');
             $table->string('purchase_category_code')->nullable();

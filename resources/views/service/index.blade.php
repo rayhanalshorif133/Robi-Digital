@@ -12,7 +12,7 @@
 @endsection
 
 @section('content')
-    <div class="container">
+    <div class="px-2">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
@@ -32,6 +32,7 @@
                             <th>Name</th>
                             <th>Type</th>
                             <th>Channel</th>
+                            <th>keyword</th>
                             <th>Validity</th>
                             <th>Actions</th>
                         </tr>
@@ -73,6 +74,12 @@
                     {
                         render: function(data, type, row) {
                             return row.channel;
+                        },
+                        targets: 0,
+                    },
+                    {
+                        render: function(data, type, row) {
+                            return row.keyword;
                         },
                         targets: 0,
                     },

@@ -16,8 +16,9 @@ class ServiceSeeder extends Seeder
     {
 
             $service = new Service();
-            $service->name = 'B2MGame';
+            $service->name = 'NDTV Yoga';
             $service->type = 'subscription';
+            $service->keyword = 'NY';
             $service->validity = 'daily';
             $service->purchase_category_code = 'Game';
             $service->reference_code = 'Game';
