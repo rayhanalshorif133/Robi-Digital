@@ -13,7 +13,6 @@
             <div class="modal-body">
                 <ul class="list-group list-group-unbordered mb-3 px-4">
                     <li class="list-group-item"><b>Name:</b> <span class="text-gray float-right show_service_name"></span></li>
-                    <li class="list-group-item"><b>Service key:</b> <span class="text-gray float-right show_service_key"></span></li>
                     <li class="list-group-item"><b>Type:</b> <span class="text-gray float-right show_service_type"></span></li>
                     <li class="list-group-item"><b>Validity:</b> <span class="text-gray float-right show_service_validity"></span></li>
                     <li class="list-group-item"><b>Purchase Category Code:</b> <span class="text-gray float-right show_purchase_category_code"></span></li>

@@ -20,3 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('getToken/{description?}', [NDTVController::class, 'getToken'])->name('getToken');
+Route::get('chargeWithTAC/{aocTransID}', [NDTVController::class, 'chargeWithTAC'])->name('chargeWithTAC');

@@ -35,7 +35,7 @@ class NDTVController extends Controller
         ];
 
         $getAOCToken = GetAOCToken::create($tokenInfos);
-        if($getAOCToken){
+        if ($getAOCToken) {
             $response = Http::post($serviceProviderInfo->aoc_getAOCToken_url, $tokenInfos);
             $response = json_decode($response);
 
@@ -57,18 +57,37 @@ class NDTVController extends Controller
             $redirectTo = $serviceProviderInfo->aoc_redirection_url . $response->data->aocToken;
 
             return Http::get($redirectTo);
-            
-        }else{
+        } else {
             return $this->respondWithError("Something went wrong!");
         }
     }
 
-    public function getSPTransID(){
+    public function getSPTransID()
+    {
         $getSPTransID = 'B2M' . $this->generateRandomString(6);
         $hasSPTransID = GetAOCToken::where('spTransID', $getSPTransID)->first();
-        if($hasSPTransID){ 
+        if ($hasSPTransID) {
             $this->getSPTransID();
         }
         return $getSPTransID;
+    }
+
+    public function chargeWithTAC($aocTransID,$msisdn,$tac)
+    {
+        $serviceProviderInfo = ServiceProviderInfo::first();
+        $parameters = [
+            'apiKey' => $serviceProviderInfo->sp_api_key,
+            'aocTransID' => $aocTransID,
+            'username' => $serviceProviderInfo->sp_username,
+            'msisdn' => $msisdn,
+            'tac' => $tac,
+            'transactionOperationStatus' => 'Charged',
+            'totalAmountCharged' => 0.01,
+        ];
+        $url = $serviceProviderInfo->aoc_chargeWithTAC_url . '/api/chargeWithTAC';
+        $response = Http::post($url);
+        $response = json_decode($response);
+
+        return $this->respondWithSuccess("Charge with TAC", $response);
     }
 }

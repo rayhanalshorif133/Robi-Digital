@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Service Provider Info'])
 
 @section('breadcrumb')
     <div class="col-sm-6">

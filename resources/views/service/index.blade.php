@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Service'])
 @section('breadcrumb')
     <div class="col-sm-6">
         <h1 class="m-0">Service</h1>
@@ -30,8 +30,8 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Service key</th>
                             <th>Type</th>
+                            <th>Channel</th>
                             <th>Validity</th>
                             <th>Actions</th>
                         </tr>
@@ -66,22 +66,19 @@
                     },
                     {
                         render: function(data, type, row) {
-                            return row.service_key;
-                            // return getButtons("/poll/admin", row.id);
+                            return row.type;
                         },
                         targets: 0,
                     },
                     {
                         render: function(data, type, row) {
-                            return row.type;
-                            // return getButtons("/poll/admin", row.id);
+                            return row.channel;
                         },
                         targets: 0,
                     },
                     {
                         render: function(data, type, row) {
                             return row.validity;
-                            // return getButtons("/poll/admin", row.id);
                         },
                         targets: 0,
                     },
@@ -143,7 +140,6 @@
                 .then(function(response) {
                     const data = response.data.data;
                     $(".show_service_name").text(data.name);
-                    $(".show_service_key").text(data.service_key);
                     $(".show_service_type").text(data.type);
                     $(".show_service_validity").text(data.validity);
                     $(".show_purchase_category_code").text(data.purchase_category_code);

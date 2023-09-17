@@ -15,18 +15,15 @@ class ServiceSeeder extends Seeder
     public function run()
     {
 
-        // for ($i = 0; $i < 20; $i++) {
-        //     $service = new Service();
-        //     $service->service_key = $this->generateRandomString(5);
-        //     $service->name = 'Service ' . $i;
-        //     $service->type = 'subscription';
-        //     $service->validity = 'daily';
-        //     $service->purchase_category_code = 'Game';
-        //     $service->reference_code = 'Game';
-        //     $service->channel = 'WEB';
-        //     $service->on_behalf_of = 'Apigate_AOC-B2M';
-        //     $service->save();
-        // }
+            $service = new Service();
+            $service->name = 'B2MGame';
+            $service->type = 'subscription';
+            $service->validity = 'daily';
+            $service->purchase_category_code = 'Game';
+            $service->reference_code = 'Game';
+            $service->channel = 'WEB';
+            $service->on_behalf_of = 'Apigate_AOC-B2M';
+            $service->save();
 
     }
 

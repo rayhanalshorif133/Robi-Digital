@@ -12,7 +12,6 @@ class Service extends Model
     protected $table = 'services';
 
     protected $fillable = [
-        'service_key',
         'name',
         'type',
         'validity',
