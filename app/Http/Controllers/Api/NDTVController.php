@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\GetAOCToken;
 use App\Models\GetAOCTokenLog;
 use App\Models\GetAOCTokenResponse;
+use App\Models\Service;
 use App\Models\ServiceProviderInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -13,32 +14,53 @@ use Illuminate\Support\Facades\Http;
 
 class NDTVController extends Controller
 {
-    public function getToken($description = 'no description')
+    public function getToken(Request $request, $keyword = null)
     {
 
+
+        $request->method() == 'POST' ? $keyword = $request->keyword : $keyword = $keyword;
+        $service = Service::where('keyword', $keyword)->first();
         $serviceProviderInfo = ServiceProviderInfo::first();
+
+        // basedURL
+        $callback = env('APP_URL') . '/api/callback';
+        $subscriptionID = $this->getSubscriptionID();
+        $unSubURL = env('APP_URL') . '/api/unsubscribe/' . $subscriptionID;
+
+        $subscriptionDuration = 2;
+        if($service->validity == 'monthly'){
+            $subscriptionDuration = 30;
+        }elseif($service->validity == 'weekly'){
+            $subscriptionDuration = 7;
+        }
+
         $tokenInfos = [
             'apiKey' => $serviceProviderInfo->sp_api_key,
             'username' => $serviceProviderInfo->sp_username,
             'spTransID' => $this->getSPTransID(),
-            'description' => $description,
+            'description' => $service->name,
+            'onBehalfOf' => $service->on_behalf_of,
+            'purchaseCategoryCode' => $service->purchase_category_code,
+            'refundPurchaseCategoryCode' => $service->purchase_category_code,
+            'referenceCode' => $service->reference_code,
+            'channel' => $service->channel,
+            'isSubscription' => true,
+            'subscriptionID' => $subscriptionID,
+            'subscriptionName' => $service->type,
+            'subscriptionDuration' => $subscriptionDuration,
+            'unSubURL' => $unSubURL,
+            'callbackURL' => $callback,
             'currency' => 'BDT',
             'amount' => '0.01',
-            'onBehalfOf' => 'Apigate_AOC-B2M',
-            'purchaseCategoryCode' => 'Game',
-            'refundPurchaseCategoryCode' => 'Game',
-            'referenceCode' => 'Game',
-            'channel' => 'WEB',
             'operator' => 'Robi',
             'taxAmount' => '0.1',
-            'callbackURL' => 'http://localhost:3000/api/callback',
-            'contactInfo' => 'rayhan@b2m-tech.com',
+            'contactInfo' => 'tushar@b2m-tech.com',
         ];
 
-        $getAOCToken = GetAOCToken::create($tokenInfos);
-        if ($getAOCToken) {
-            $response = Http::post($serviceProviderInfo->aoc_getAOCToken_url, $tokenInfos);
-            $response = json_decode($response);
+        $response = Http::post($serviceProviderInfo->aoc_getAOCToken_url, $tokenInfos);
+        $response = json_decode($response);
+        if ($response) {
+            $getAOCToken = GetAOCToken::create($tokenInfos);
 
             $aocTokenResponse = GetAOCTokenResponse::create([
                 'get_aoc_token_id' => $getAOCToken->id,
@@ -56,13 +78,22 @@ class NDTVController extends Controller
             ]);
 
             $redirectTo = $serviceProviderInfo->aoc_redirection_url . $response->data->aocToken;
-
             return Http::get($redirectTo);
         } else {
             return $this->respondWithError("Something went wrong!");
         }
     }
 
+    public function getSubscriptionID()
+    {
+        $getSubscriptionID = 'B2MSub_' . $this->generateRandomString(6);
+        $hasSubscriptionID = GetAOCToken::where('subscriptionID', $getSubscriptionID)->first();
+        if ($hasSubscriptionID) {
+            $this->getSubscriptionID();
+        }
+        return $getSubscriptionID;
+    }
+    
     public function getSPTransID()
     {
         $getSPTransID = 'B2M' . $this->generateRandomString(6);
@@ -73,7 +104,7 @@ class NDTVController extends Controller
         return $getSPTransID;
     }
 
-    public function chargeWithTAC($aocTransID,$msisdn,$tac)
+    public function chargeWithTAC($aocTransID, $msisdn, $tac)
     {
         $serviceProviderInfo = ServiceProviderInfo::first();
         $parameters = [
@@ -92,7 +123,8 @@ class NDTVController extends Controller
         return $this->respondWithSuccess("Charge with TAC", $response);
     }
 
-    public function callback(Request $request){
+    public function callback(Request $request)
+    {
         // "data": {
         //     "transactionOperationStatus": "Charged",
         //     "totalAmountCharged": "5.00",

@@ -19,7 +19,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('getToken/{description?}', [NDTVController::class, 'getToken'])->name('getToken');
+// Route::get('getToken/{keyword?}', [NDTVController::class, 'getTokenMethodGET'])->name('getToken');
+// Route::post('getToken', [NDTVController::class, 'getTokenMethodPost'])->name('getToken');
+
+// getToken Method only supports GET and POST
+Route::match(['get', 'post'], 'getToken/{keyword?}', [NDTVController::class, 'getToken'])->name('getToken');
+
 Route::post('callback', [NDTVController::class, 'callback'])->name('callback');
 Route::get('chargeWithTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'chargeWithTAC'])->name('chargeWithTAC');
 Route::get('requestNewTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'requestNewTAC'])->name('requestNewTAC');
