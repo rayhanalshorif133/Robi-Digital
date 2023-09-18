@@ -90,14 +90,14 @@
                                 </p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="{{ route('hit_log.received') }}" class="nav-link  @if ($routeName == 'hit_log.received') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
                                     Received Logs
                                 </p>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </li>
             </ul>

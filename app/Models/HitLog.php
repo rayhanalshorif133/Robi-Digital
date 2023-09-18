@@ -21,6 +21,6 @@ class HitLog extends Model
 
     public function getAOCToken()
     {
-        return $this->belongsTo(GetAOCToken::class);
+        return $this->belongsTo(GetAOCToken::class, 'get_aoc_token_id');
     }
 }

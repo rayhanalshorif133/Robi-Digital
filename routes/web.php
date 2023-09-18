@@ -38,8 +38,8 @@ Route::resource('service-provider-info', ServiceProviderInfoController::class);
 Route::prefix('hit_log')
     ->name('hit_log.')
     ->group(function () {
-        Route::get('sent/', [HitLogController::class, 'sent'])->name('sent');
-        Route::get('received/', [HitLogController::class, 'received'])->name('received');
+        Route::get('sent/{id?}', [HitLogController::class, 'sent'])->name('sent');
+        Route::get('received', [HitLogController::class, 'received'])->name('received');
     });
 
 

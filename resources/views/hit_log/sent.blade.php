@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Hit Log Sent'])
 
 @section('breadcrumb')
     <div class="col-sm-6">
@@ -20,19 +20,17 @@
                     <i class="fa-solid fa-paper-plane mr-1"></i>
                     Hit Log Sent
                 </h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                        data-target="#service-create">Add New</button>
-                </div>
             </div>
 
             <div class="card-body">
                 <table class="table table-bordered" id="hitLogSentTableId">
                     <thead>
                         <tr>
+                            <th>SP Trans ID</th>
                             <th>Keyword</th>
                             <th>Time</th>
                             <th>Date</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -53,7 +51,14 @@
                 serverSide: true,
                 ajax: url,
                 ordering: false,
-                columns: [{
+                columns: [
+                    {
+                        render: function(data, type, row) {
+                            return `<span>${row.get_a_o_c_token?.spTransID}</span>`;
+                        },
+                        targets: 0,
+                    },
+                    {
                         render: function(data, type, row) {
                             return `<a href="/service?search=${row.keyword}">${row.keyword}</a>`;
                         },
@@ -61,13 +66,21 @@
                     },
                     {
                         render: function(data, type, row) {
-                            return row.time;
+                            return moment(row.time, 'HH:mm:ss').format('hh:mm A');
                         },
                         targets: 0,
                     },
                     {
                         render: function(data, type, row) {
-                            return row.date;
+                            return moment(row.date).format('DD-MMM-YYYY');
+                        },
+                        targets: 0,
+                    },
+                    {
+                        render: function(data, type, row) {
+                            return `<a href="/hit_log/sent/${row.id}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-eye"></i>
+                                </a>`;
                         },
                         targets: 0,
                     },
