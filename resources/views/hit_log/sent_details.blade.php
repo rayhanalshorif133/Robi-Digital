@@ -40,12 +40,12 @@
                     <div class="d-flex"><h5 class="mr-2"><b>Keyword:</b></h5>{{$hitLog->keyword}}</div>
                     <hr/>
                     <div>
-                        <h5><b>Postback sent data details:</b></h5>
+                        <h5><b>AOC Response data details:</b></h5>
                         <p><b>aocTransID:</b> {{$hitLog->postBackSendData->aocTransID}}</p>
                         <p><b>spTransID:</b> {{$hitLog->postBackSendData->spTransID}}</p>
                         <p><b>redirectURL:</b> {{$hitLog->postBackSendData->redirectURL}}</p>
                         <hr/>
-                        <h5><b>Postback sent raw data:</b></h5>
+                        <h5><b>Raw data:</b></h5>
                         <p>{{$hitLog->postBack_send_data}}</p>
                     </div>
                 </div>

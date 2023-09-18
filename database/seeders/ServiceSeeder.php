@@ -26,18 +26,18 @@ class ServiceSeeder extends Seeder
             $service->on_behalf_of = 'Apigate_AOC-B2M';
             $service->save();
 
-            for ($i=0; $i < 30; $i++) { 
-                $service = new Service();
-                $service->name = 'ND_'. $i .'_TV_' . $this->generateRandomString(4);
-                $service->type = 'subscription';
-                $service->keyword = $this->getKeyword();
-                $service->validity = 'daily';
-                $service->purchase_category_code = 'Game';
-                $service->reference_code = 'Game';
-                $service->channel = 'WEB';
-                $service->on_behalf_of = 'Apigate_AOC-B2M';
-                $service->save();
-            }
+            // for ($i=0; $i < 30; $i++) { 
+            //     $service = new Service();
+            //     $service->name = 'ND_'. $i .'_TV_' . $this->generateRandomString(4);
+            //     $service->type = 'subscription';
+            //     $service->keyword = $this->getKeyword();
+            //     $service->validity = 'daily';
+            //     $service->purchase_category_code = 'Game';
+            //     $service->reference_code = 'Game';
+            //     $service->channel = 'WEB';
+            //     $service->on_behalf_of = 'Apigate_AOC-B2M';
+            //     $service->save();
+            // }
 
     }
 
