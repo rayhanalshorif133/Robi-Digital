@@ -28,7 +28,8 @@ class NDTVController extends Controller
         // basedURL
         $callback = env('APP_URL') . '/api/callback';
         $subscriptionID = $this->getSubscriptionID();
-        $unSubURL = env('APP_URL') . '/api/unsubscribe/' . $subscriptionID;
+        $spTransID = $this->getSPTransID();
+        $unSubURL = env('APP_URL') . '/api/cancelSubscription/' . $spTransID . '/+8801818401065';
 
         $subscriptionDuration = 2;
         if($service->validity == 'monthly'){
@@ -40,7 +41,7 @@ class NDTVController extends Controller
         $tokenInfos = [
             'apiKey' => $serviceProviderInfo->sp_api_key,
             'username' => $serviceProviderInfo->sp_username,
-            'spTransID' => $this->getSPTransID(),
+            'spTransID' => $spTransID,
             'description' => $service->name,
             'onBehalfOf' => $service->on_behalf_of,
             'purchaseCategoryCode' => $service->purchase_category_code,
