@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HitLog;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +25,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $hitLogs = HitLog::count();
+        $services = Service::count();
+        return view('home', compact('services', 'hitLogs'));
     }
 }
