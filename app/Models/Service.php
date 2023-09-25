@@ -20,5 +20,6 @@ class Service extends Model
         'reference_code',
         'channel',
         'on_behalf_of',
+        'charge',
     ];
 }

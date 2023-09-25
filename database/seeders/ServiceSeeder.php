@@ -23,7 +23,46 @@ class ServiceSeeder extends Seeder
             $service->purchase_category_code = 'Game';
             $service->reference_code = 'Game';
             $service->channel = 'WEB';
-            $service->on_behalf_of = 'Apigate_AOC-B2M';
+            $service->charge = 10.00;
+            $service->on_behalf_of = 'MIFE_AOC-B2M(NdtvYoga)';
+            $service->save();
+
+
+            $service = new Service();
+            $service->name = 'Lifestyle';
+            $service->type = 'subscription';
+            $service->keyword = 'LD';
+            $service->validity = 'daily';
+            $service->purchase_category_code = 'Game';
+            $service->reference_code = 'Game';
+            $service->channel = 'WEB';
+            $service->charge = 5.00;
+            $service->on_behalf_of = 'MIFE_AOC-B2M(NdtvYoga)';
+            $service->save();
+            
+            $service = new Service();
+            $service->name = 'Lifestyle';
+            $service->type = 'subscription';
+            $service->keyword = 'LW';
+            $service->validity = 'weekly';
+            $service->purchase_category_code = 'Game';
+            $service->reference_code = 'Game';
+            $service->channel = 'WEB';
+            $service->charge = 30.00;
+            $service->on_behalf_of = 'MIFE_AOC-B2M(NdtvYoga)';
+            $service->save();
+
+
+            $service = new Service();
+            $service->name = 'Lifestyle';
+            $service->type = 'subscription';
+            $service->keyword = 'LM';
+            $service->validity = 'monthly';
+            $service->purchase_category_code = 'Game';
+            $service->reference_code = 'Game';
+            $service->channel = 'WEB';
+            $service->charge = 90.00;
+            $service->on_behalf_of = 'MIFE_AOC-B2M(NdtvYoga)';
             $service->save();
 
             // for ($i=0; $i < 30; $i++) { 
@@ -35,7 +74,7 @@ class ServiceSeeder extends Seeder
             //     $service->purchase_category_code = 'Game';
             //     $service->reference_code = 'Game';
             //     $service->channel = 'WEB';
-            //     $service->on_behalf_of = 'Apigate_AOC-B2M';
+            //     $service->on_behalf_of = 'MIFE_AOC-B2M(NdtvYoga)';
             //     $service->save();
             // }
 

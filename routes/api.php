@@ -26,7 +26,6 @@ Route::match(['get', 'post'], 'getToken/{keyword?}', [NDTVController::class, 'ge
 
 Route::get('redirect/{aocTransID}', [NDTVController::class, 'redirect'])->name('redirect');
 
-Route::post('callback', [CallBackController::class, 'callback'])->name('callback');
 Route::get('chargeStatus/{aocTransID}', [NDTVController::class, 'chargeStatus'])->name('chargeStatus');
 
 

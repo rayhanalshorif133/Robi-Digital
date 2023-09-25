@@ -15,6 +15,7 @@
                     <li class="list-group-item"><b>Name:</b> <span class="text-gray float-right show_service_name"></span></li>
                     <li class="list-group-item"><b>Type:</b> <span class="text-gray float-right show_service_type"></span></li>
                     <li class="list-group-item"><b>Validity:</b> <span class="text-gray float-right show_service_validity"></span></li>
+                    <li class="list-group-item"><b>Charge:</b> <span class="text-gray float-right mx-1">Tk</span><span class="text-gray float-right show_service_charge"></span></li>
                     <li class="list-group-item"><b>Purchase Category Code:</b> <span class="text-gray float-right show_purchase_category_code"></span></li>
                     <li class="list-group-item"><b>Reference Code:</b> <span class="text-gray float-right show_reference_code"></span></li>
                     <li class="list-group-item"><b>Channel:</b> <span class="text-gray float-right show_channel"></span></li>

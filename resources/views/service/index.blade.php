@@ -34,6 +34,7 @@
                             <th>Channel</th>
                             <th>keyword</th>
                             <th>Validity</th>
+                            <th>Charge</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -91,6 +92,12 @@
                     },
                     {
                         render: function(data, type, row) {
+                            return `<span>${row.charge} tk</span>`;
+                        },
+                        targets: 0,
+                    },
+                    {
+                        render: function(data, type, row) {
                             const btns = `
                             <div class="btn-group" id="${row.id}">
                                     <button type="button" class="btn btn-outline-success serviceShowBtn" data-toggle="modal"
@@ -131,9 +138,11 @@
                 .then(function(response) {
                     const data = response.data.data;
                     $("#serviceUpdateFrom").attr('action', `/service/${id}`);
+                    const charge = parseFloat(data.charge);
                     $("#serviceUpdateFrom input[name='name']").val(data.name);
                     $("#serviceUpdateFrom select[name='type']").val(data.type);
                     $("#serviceUpdateFrom select[name='validity']").val(data.validity);
+                    $("#updateCharge").val(charge);
                     $("#serviceUpdateFrom input[name='purchase_category_code']").val(data.purchase_category_code);
                     $("#serviceUpdateFrom input[name='reference_code']").val(data.reference_code);
                     $("#serviceUpdateFrom input[name='channel']").val(data.channel);
@@ -155,6 +164,7 @@
                     $(".show_service_name").text(data.name);
                     $(".show_service_type").text(data.type);
                     $(".show_service_validity").text(data.validity);
+                    $(".show_service_charge").text(data.charge);
                     $(".show_purchase_category_code").text(data.purchase_category_code);
                     $(".show_reference_code").text(data.reference_code);
                     $(".show_channel").text(data.channel);

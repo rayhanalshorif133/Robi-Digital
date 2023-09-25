@@ -3,6 +3,7 @@
 use App\Http\Controllers\HitLogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\CallBackController;
 use App\Http\Controllers\ServiceProviderInfoController;
 use App\Http\Controllers\TokenController;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +35,9 @@ Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
 Route::resource('service', ServiceController::class);
 Route::resource('service-provider-info', ServiceProviderInfoController::class);
+
+Route::get('callback', [CallBackController::class, 'callback'])->name('callback');
+
 
 Route::prefix('hit_log')
     ->name('hit_log.')

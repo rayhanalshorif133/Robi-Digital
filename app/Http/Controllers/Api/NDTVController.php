@@ -26,7 +26,7 @@ class NDTVController extends Controller
         $serviceProviderInfo = ServiceProviderInfo::first();
 
         // basedURL
-        $callback = env('APP_URL') . '/api/callback';
+        $callback = env('APP_URL') . '/callback';
         $subscriptionID = $this->getSubscriptionID();
         $spTransID = $this->getSPTransID();
         $unSubURL = env('APP_URL') . '/api/cancelSubscription/' . $spTransID . '/+8801818401065';
@@ -54,9 +54,9 @@ class NDTVController extends Controller
             'subscriptionDuration' => $subscriptionDuration,
             'unSubURL' => $unSubURL,
             'callbackURL' => $callback,
-            'msisdn' => '+8801818401065',
+            'msisdn' => '',
             'currency' => 'BDT',
-            'amount' => '0.01',
+            'amount' => $service->charge,
             'operator' => 'Robi',
             'taxAmount' => '0.1',
             'contactInfo' => 'tushar@b2m-tech.com',
@@ -97,6 +97,8 @@ class NDTVController extends Controller
             $hitLog->time = date('H:i:s');
             $hitLog->postBack_send_data = json_encode($sendData);
             $hitLog->save();
+
+           
 
             return $this->respondWithSuccess("Token successfully fetched", $sendData);
             
@@ -143,7 +145,7 @@ class NDTVController extends Controller
         $url = $serviceProviderInfo->aoc_endpoint_url . '/chargeStatus';
         $response = Http::post($url,$parameters);
         $response = json_decode($response);
-
+        // dd($response);
         $chargeStatus = new ChargeStatusResponse();
         $chargeStatus->aocTransID = $aocTransID;
         $chargeStatus->chargeMode = $response->data->chargeMode;
@@ -159,7 +161,7 @@ class NDTVController extends Controller
             'charge_status_response_id' => $chargeStatus->id,
             'data' => json_encode($response->data),
         ]);
-        return $this->respondWithSuccess("Charge status", $response);
+        return $this->respondWithSuccess("Charge status", $response->data);
     }
 
     

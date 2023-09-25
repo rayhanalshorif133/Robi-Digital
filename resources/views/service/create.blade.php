@@ -45,6 +45,13 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label for="charge" class="required">Service charge</label>
+                                    <input type="number" name="charge" id="charge" required class="form-control"
+                                        placeholder="Enter Service charge">                                    
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label for="purchase_category_code" class="required">Purchase Category Code</label>
                                     <input type="text" name="purchase_category_code" id="purchase_category_code" required class="form-control"
                                         placeholder="Enter Service Name">

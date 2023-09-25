@@ -32,6 +32,7 @@ class ServiceController extends Controller
         $isValidator = Validator::make($request->all(), [
             'name' => 'required',
             'type' => 'required',
+            'charge' => 'required',
             'validity' => 'required',
             'purchase_category_code' => 'required',
             'reference_code' => 'required',
@@ -50,6 +51,7 @@ class ServiceController extends Controller
             $service = new Service();
             $service->name = $request->name;
             $service->keyword = $request->keyword;
+            $service->charge = $request->charge;
             $service->type = $request->type;
             $service->validity = $request->validity;
             $service->purchase_category_code = $request->purchase_category_code;
@@ -97,6 +99,7 @@ class ServiceController extends Controller
         $isValidator = Validator::make($request->all(), [
             'name' => 'required',
             'type' => 'required',
+            'charge' => 'required',
             'keyword' => 'required|unique:services,keyword,' . $id . ',id',
             'validity' => 'required',
             'purchase_category_code' => 'required',
@@ -119,6 +122,7 @@ class ServiceController extends Controller
             $service->name = $request->name;
             $service->type = $request->type;
             $service->keyword = $request->keyword;
+            $service->charge = $request->charge;
             $service->validity = $request->validity;
             $service->purchase_category_code = $request->purchase_category_code;
             $service->reference_code = $request->reference_code;
