@@ -15,16 +15,8 @@ class CreateCallbacksTable extends Migration
     {
         Schema::create('callbacks', function (Blueprint $table) {
             $table->id();
-            $table->string('transactionOperationStatus')->nullable();
-            $table->string('totalAmountCharged')->nullable();
-            $table->string('msisdn')->nullable();
             $table->string('aocTransID')->nullable();
-            $table->string('clientCorrelator')->nullable();
-            $table->string('chargeMode')->nullable();
-            $table->string('expiryDate')->nullable();
-            $table->string('subscriptionID')->nullable();
-            $table->string('errorCode')->nullable();
-            $table->string('errorMessage')->nullable();
+            $table->text('raw_data')->nullable();
             $table->timestamps();
         });
     }

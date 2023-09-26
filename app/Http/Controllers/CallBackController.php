@@ -12,26 +12,11 @@ class CallBackController extends Controller
     public function callback(Request $request)
     {
         try {
-            // $data = $request->all();
-
-            // $callback = new Callback();
-            // $callback->transactionOperationStatus = $data['transactionOperationStatus'];
-            // $callback->totalAmountCharged = $data['totalAmountCharged'];
-            // $callback->msisdn = $data['msisdn'];
-            // $callback->aocTransID = $data['aocTransID'];
-            // $callback->clientCorrelator = $data['clientCorrelator'];
-            // $callback->chargeMode = $data['chargeMode'];
-            // $callback->expiryDate = $data['expiryDate'];
-            // $callback->subscriptionID = $data['subscriptionID'];
-            // $callback->errorCode = $data['errorCode'];
-            // $callback->errorMessage = $data['errorMessage'];
-            // $callback->save();
-
-            // CallbackRaw::create([
-            //     'callback_id' => $callback->id,
-            //     'data' => json_encode($request->data),
-            // ]);
-
+            $data = $request->all();
+            $callback = new Callback();
+            $callback->aocTransID = $data['aocTransID'];
+            $callback->raw_data = json_encode($request->data);
+            $callback->save();
             $redirect = env('APP_URL') . '/api/chargeStatus/' . $request->aocTransID;
             return redirect($redirect);
         } catch (\Throwable $th) {

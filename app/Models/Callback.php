@@ -10,20 +10,7 @@ class Callback extends Model
     use HasFactory;
 
     protected $fillable = [
-        'transactionOperationStatus',
-        'totalAmountCharged',
-        'msisdn',
         'aocTransID',
-        'clientCorrelator',
-        'chargeMode',
-        'expiryDate',
-        'subscriptionID',
-        'errorCode',
-        'errorMessage',
+        'raw_data'
     ];
-
-    public function callbackRaw()
-    {
-        return $this->hasOne(CallbackRaw::class);
-    }
 }
