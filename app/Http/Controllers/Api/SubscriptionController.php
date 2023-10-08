@@ -21,8 +21,7 @@ class SubscriptionController extends Controller
         if ($spTransID == 0 || $msisdn == 0) {
             return $this->respondWithError('spTransID and msisdn are required');
         }
-
-
+        
         $serviceProviderInfo = ServiceProviderInfo::first();
         $getAOCToken = GetAOCToken::where('spTransID', $spTransID)->first();
 
