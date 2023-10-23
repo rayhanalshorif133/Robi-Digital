@@ -37,6 +37,7 @@ class ServiceController extends Controller
             'purchase_category_code' => 'required',
             'reference_code' => 'required',
             'channel' => 'required',
+            'redirect_url' => 'required',
             'keyword' => 'required|unique:services',
             'on_behalf_of' => 'required',
         ]);
@@ -54,6 +55,7 @@ class ServiceController extends Controller
             $service->charge = $request->charge;
             $service->type = $request->type;
             $service->validity = $request->validity;
+            $service->redirect_url = $request->redirect_url;
             $service->purchase_category_code = $request->purchase_category_code;
             $service->reference_code = $request->reference_code;
             $service->channel = $request->channel;
@@ -100,6 +102,7 @@ class ServiceController extends Controller
             'name' => 'required',
             'type' => 'required',
             'charge' => 'required',
+            'redirect_url' => 'required',
             'keyword' => 'required|unique:services,keyword,' . $id . ',id',
             'validity' => 'required',
             'purchase_category_code' => 'required',
@@ -124,6 +127,7 @@ class ServiceController extends Controller
             $service->keyword = $request->keyword;
             $service->charge = $request->charge;
             $service->validity = $request->validity;
+            $service->redirect_url = $request->redirect_url;
             $service->purchase_category_code = $request->purchase_category_code;
             $service->reference_code = $request->reference_code;
             $service->channel = $request->channel;

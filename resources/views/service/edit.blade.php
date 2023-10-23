@@ -81,6 +81,13 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label for="update_redirect_url" class="required">Redirect URL</label>
+                                    <input type="text" name="redirect_url" id="update_redirect_url" required class="form-control"
+                                        placeholder="Enter Redirect URL">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label for="update_on_behalf_of" class="required">On Behalf Of</label>
                                     <input type="text" name="on_behalf_of" id="update_on_behalf_of" required class="form-control"
                                         placeholder="Enter Service Name">

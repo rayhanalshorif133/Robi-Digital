@@ -23,6 +23,7 @@ class CreateServicesTable extends Migration
             $table->string('purchase_category_code')->nullable();
             $table->string('reference_code')->nullable();
             $table->float('charge', 0, 8)->nullable();
+            $table->string('redirect_url')->nullable();
             $table->string('channel')->nullable();
             $table->string('on_behalf_of')->nullable();
             $table->timestamps();

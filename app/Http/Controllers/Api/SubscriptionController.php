@@ -21,7 +21,8 @@ class SubscriptionController extends Controller
         if ($spTransID == 0 || $msisdn == 0) {
             return $this->respondWithError('spTransID and msisdn are required');
         }
-        
+
+
         $serviceProviderInfo = ServiceProviderInfo::first();
         $getAOCToken = GetAOCToken::where('spTransID', $spTransID)->first();
 
@@ -68,31 +69,41 @@ class SubscriptionController extends Controller
             $url = $serviceProviderInfo->aoc_endpoint_url . '/cancelSubscription';
             $response = Http::post($url, $parameters);
             $response = json_decode($response);
-            return $this->respondWithSuccess('Subscription cancelled Successfully', $response);
+            if($response->data->errorCode != 00){
+                $data = [
+                    'spTransID' => $spTransID,
+                    'msisdn' => $msisdn,
+                ];
+                return $this->respondWithSuccess('Subscription already cancelled. Please re-subscribe.',$data);
+            }
+            return $this->respondWithSuccess('Subscription cancelled Successfully', $response->data);
         } catch (\Throwable $th) {
             return $this->respondWithError('Something went wrong', $th->getMessage());
         }
     }
 
     // subscriptionStatus
-    public function subscriptionStatus($subscriptionID = 0, $msisdn = 0)
+    public function subscriptionStatus($spTransID = 0, $msisdn = 0)
     {
 
-        if ($subscriptionID == 0 || $msisdn == 0) {
-            return $this->respondWithError('subscriptionID and msisdn are required');
+        if ($spTransID == 0 || $msisdn == 0) {
+            return $this->respondWithError('spTransID and msisdn are required');
         }
 
         $serviceProviderInfo = ServiceProviderInfo::first();
+        $getAOCToken = GetAOCToken::where('spTransID', $spTransID)->first();
         $parameters = [
             'username' => $serviceProviderInfo->sp_username,
             'apiKey' => $serviceProviderInfo->sp_api_key,
             'msisdn' => $msisdn,
             'operator' => 'Robi',
-            'subscriptionID' => $subscriptionID,
+            'subscriptionID' =>  $getAOCToken->subscriptionID,
         ];
         $url = $serviceProviderInfo->aoc_endpoint_url . '/subscriptionStatus';
         $response = Http::post($url, $parameters);
         $response = json_decode($response);
-        return $this->respondWithSuccess('Subscription Status', $response);
+
+
+        return $this->respondWithSuccess('Subscription Status', $response->data);
     }
 }

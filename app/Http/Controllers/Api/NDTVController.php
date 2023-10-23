@@ -145,7 +145,10 @@ class NDTVController extends Controller
         $url = $serviceProviderInfo->aoc_endpoint_url . '/chargeStatus';
         $response = Http::post($url,$parameters);
         $response = json_decode($response);
-        // dd($response);
+
+        if($response->data->errorCode != 00){
+            return $this->respondWithError("Charge status", $response->data->errorMessage);
+        }
         $chargeStatus = new ChargeStatusResponse();
         $chargeStatus->aocTransID = $aocTransID;
         $chargeStatus->chargeMode = $response->data->chargeMode;

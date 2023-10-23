@@ -31,7 +31,7 @@ Route::get('chargeStatus/{aocTransID}', [NDTVController::class, 'chargeStatus'])
 
 Route::get('renewSubscription/{spTransID}/{msisdn}', [SubscriptionController::class, 'renewSubscription'])->name('renewSubscription');
 Route::get('cancelSubscription/{spTransID}/{msisdn}', [SubscriptionController::class, 'cancelSubscription'])->name('cancelSubscription');
-Route::get('subscriptionStatus/{subscriptionID}/{msisdn}', [SubscriptionController::class, 'subscriptionStatus'])->name('subscriptionStatus');
+Route::get('subscriptionStatus/{spTransID}/{msisdn}', [SubscriptionController::class, 'subscriptionStatus'])->name('subscriptionStatus');
 
 
 // Route::get('chargeWithTAC/{aocTransID}/{msisdn}', [NDTVController::class, 'chargeWithTAC'])->name('chargeWithTAC');

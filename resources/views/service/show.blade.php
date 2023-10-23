@@ -19,6 +19,7 @@
                     <li class="list-group-item"><b>Purchase Category Code:</b> <span class="text-gray float-right show_purchase_category_code"></span></li>
                     <li class="list-group-item"><b>Reference Code:</b> <span class="text-gray float-right show_reference_code"></span></li>
                     <li class="list-group-item"><b>Channel:</b> <span class="text-gray float-right show_channel"></span></li>
+                    <li class="list-group-item"><b>Redirect URL:</b> <span class="text-gray float-right show_redirect_url"></span></li>
                     <li class="list-group-item"><b>On Behalf of:</b> <span class="text-gray float-right show_on_behalf_of"></span></li>
                 </ul>
             </div>

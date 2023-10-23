@@ -23,6 +23,7 @@ class ServiceSeeder extends Seeder
             $service->purchase_category_code = 'Game';
             $service->reference_code = 'Game';
             $service->channel = 'WEB';
+            $service->redirect_url = 'https://www.google.com/';
             $service->charge = 10.00;
             $service->on_behalf_of = 'MIFE_AOC-B2M(NdtvYoga)';
             $service->save();
@@ -36,6 +37,7 @@ class ServiceSeeder extends Seeder
             $service->purchase_category_code = 'Game';
             $service->reference_code = 'Game';
             $service->channel = 'WEB';
+            $service->redirect_url = 'https://www.google.com/';
             $service->charge = 5.00;
             $service->on_behalf_of = 'MIFE_AOC-B2M(NdtvYoga)';
             $service->save();
@@ -48,6 +50,7 @@ class ServiceSeeder extends Seeder
             $service->purchase_category_code = 'Game';
             $service->reference_code = 'Game';
             $service->channel = 'WEB';
+            $service->redirect_url = 'https://www.google.com/';
             $service->charge = 30.00;
             $service->on_behalf_of = 'MIFE_AOC-B2M(NdtvYoga)';
             $service->save();
@@ -60,6 +63,7 @@ class ServiceSeeder extends Seeder
             $service->validity = 'monthly';
             $service->purchase_category_code = 'Game';
             $service->reference_code = 'Game';
+            $service->redirect_url = 'https://www.google.com/';
             $service->channel = 'WEB';
             $service->charge = 90.00;
             $service->on_behalf_of = 'MIFE_AOC-B2M(NdtvYoga)';

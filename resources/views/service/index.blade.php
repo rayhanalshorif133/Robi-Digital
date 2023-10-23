@@ -147,6 +147,7 @@
                     $("#serviceUpdateFrom input[name='reference_code']").val(data.reference_code);
                     $("#serviceUpdateFrom input[name='channel']").val(data.channel);
                     $("#serviceUpdateFrom input[name='on_behalf_of']").val(data.on_behalf_of);
+                    $("#serviceUpdateFrom input[name='redirect_url']").val(data.redirect_url);
                     $("#serviceUpdateFrom input[name='keyword']").val(data.keyword);
                     
                     $("#service-update").modal('show');
@@ -168,7 +169,8 @@
                     $(".show_purchase_category_code").text(data.purchase_category_code);
                     $(".show_reference_code").text(data.reference_code);
                     $(".show_channel").text(data.channel);
-                    $(".show_on_behalf_of").text(data.on_behalf_of);               
+                    $(".show_on_behalf_of").text(data.on_behalf_of);      
+                    $(".show_redirect_url").text(data.redirect_url);            
                     $("#service-show").modal('show');
                 });
             });
