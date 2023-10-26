@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\GetAOCToken;
-use App\Models\GetAOCTokenResponse;
 use App\Models\ServiceProviderInfo;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-use function PHPUnit\Framework\isNull;
 
 class SubscriptionController extends Controller
 {
@@ -26,10 +23,14 @@ class SubscriptionController extends Controller
         $serviceProviderInfo = ServiceProviderInfo::first();
         $getAOCToken = GetAOCToken::where('spTransID', $spTransID)->first();
 
+        $NDTVController = new NDTVController();
+        $spTransID = $NDTVController->getSPTransID();
+
         $parameters = [
             'apiKey' => $serviceProviderInfo->sp_api_key,
             'username' => $serviceProviderInfo->sp_username,
             'spTransID' => $spTransID,
+            'amount' => $serviceProviderInfo->sp_amount,
             'description' => $getAOCToken->description,
             'currency' => $getAOCToken->currency,
             'onBehalfOf' => $getAOCToken->onBehalfOf,
@@ -46,7 +47,20 @@ class SubscriptionController extends Controller
         $url = $serviceProviderInfo->aoc_endpoint_url . '/renewSubscription';
         $response = Http::post($url, $parameters);
         $response = json_decode($response);
-        return $this->respondWithSuccess('Subscription Renewed Successfully', $response);
+
+        if($response->data->errorCode != 00){
+            $data = [
+                'spTransID' => $spTransID,
+                'msisdn' => $msisdn,
+                'subscriptionID' => $getAOCToken->subscriptionID
+            ];
+             
+            return $this->respondWithSuccess('Subscription already renewed. Please try again later.',$data);
+        }
+
+        $getAOCToken->spTransID = $spTransID;
+        $getAOCToken->save();
+        return $this->respondWithSuccess('Subscription Renewed Successfully', $response->data);
     }
 
     // cancelSubscription
