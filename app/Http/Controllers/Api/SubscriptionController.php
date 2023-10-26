@@ -48,18 +48,46 @@ class SubscriptionController extends Controller
         $response = Http::post($url, $parameters);
         $response = json_decode($response);
 
-        if($response->data->errorCode != 00){
+        if ($response->data->errorCode != 00) {
             $data = [
                 'spTransID' => $spTransID,
                 'msisdn' => $msisdn,
                 'subscriptionID' => $getAOCToken->subscriptionID
             ];
-             
-            return $this->respondWithSuccess('Subscription already renewed. Please try again later.',$data);
+
+
+            $renewNotificationData = [
+                'spTransID' => $spTransID,
+                'msisdn' => $msisdn,
+                'subscriptionID' => $getAOCToken->subscriptionID,
+                'type' => 'renew',
+                'status' => 'failed',
+            ];
+
+            // $NDTVController->sendNotification($renewNotificationData);
+
+            return $this->respondWithSuccess('Subscription already renewed. Please try again later.', $data);
         }
 
         $getAOCToken->spTransID = $spTransID;
         $getAOCToken->save();
+
+        $data = [
+            'spTransID' => $spTransID,
+            'msisdn' => $msisdn,
+            'subscriptionID' => $getAOCToken->subscriptionID
+        ];
+
+        $renewNotificationData = [
+            'spTransID' => $spTransID,
+            'msisdn' => $msisdn,
+            'subscriptionID' => $getAOCToken->subscriptionID,
+            'type' => 'renew',
+            'status' => 'success',
+        ];
+
+        // $NDTVController->sendNotification($renewNotificationData);
+
         return $this->respondWithSuccess('Subscription Renewed Successfully', $response->data);
     }
 
@@ -83,12 +111,12 @@ class SubscriptionController extends Controller
             $url = $serviceProviderInfo->aoc_endpoint_url . '/cancelSubscription';
             $response = Http::post($url, $parameters);
             $response = json_decode($response);
-            if($response->data->errorCode != 00){
+            if ($response->data->errorCode != 00) {
                 $data = [
                     'spTransID' => $spTransID,
                     'msisdn' => $msisdn,
                 ];
-                return $this->respondWithSuccess('Subscription already cancelled. Please re-subscribe.',$data);
+                return $this->respondWithSuccess('Subscription already cancelled. Please re-subscribe.', $data);
             }
             return $this->respondWithSuccess('Subscription cancelled Successfully', $response->data);
         } catch (\Throwable $th) {
