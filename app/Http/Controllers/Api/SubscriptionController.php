@@ -11,12 +11,17 @@ use Illuminate\Support\Facades\Http;
 class SubscriptionController extends Controller
 {
     // renewSubscription
-    public function renewSubscription($spTransID = 0, $msisdn = 0)
+    public function renewSubscription($spTransID = null, $msisdn = null)
     {
 
 
-        if ($spTransID == 0 || $msisdn == 0) {
-            return $this->respondWithError('spTransID and msisdn are required');
+        if ($spTransID == null || $msisdn == null) {
+
+            $data = [
+                'spTransID' => 'required',
+                'msisdn' => 'required',
+            ];
+            return $this->respondWithError('spTransID and msisdn are required',$data);
         }
 
 
@@ -48,55 +53,30 @@ class SubscriptionController extends Controller
         $response = Http::post($url, $parameters);
         $response = json_decode($response);
 
-        if ($response->data->errorCode != 00) {
+        if($response->data->errorCode != 00){
             $data = [
                 'spTransID' => $spTransID,
                 'msisdn' => $msisdn,
                 'subscriptionID' => $getAOCToken->subscriptionID
             ];
-
-
-            $renewNotificationData = [
-                'spTransID' => $spTransID,
-                'msisdn' => $msisdn,
-                'subscriptionID' => $getAOCToken->subscriptionID,
-                'type' => 'renew',
-                'status' => 'failed',
-            ];
-
-            // $NDTVController->sendNotification($renewNotificationData);
-
-            return $this->respondWithSuccess('Subscription already renewed. Please try again later.', $data);
+             
+            return $this->respondWithSuccess('Subscription already renewed. Please try again later.',$data);
         }
 
         $getAOCToken->spTransID = $spTransID;
         $getAOCToken->save();
-
-        $data = [
-            'spTransID' => $spTransID,
-            'msisdn' => $msisdn,
-            'subscriptionID' => $getAOCToken->subscriptionID
-        ];
-
-        $renewNotificationData = [
-            'spTransID' => $spTransID,
-            'msisdn' => $msisdn,
-            'subscriptionID' => $getAOCToken->subscriptionID,
-            'type' => 'renew',
-            'status' => 'success',
-        ];
-
-        // $NDTVController->sendNotification($renewNotificationData);
-
         return $this->respondWithSuccess('Subscription Renewed Successfully', $response->data);
     }
 
     // cancelSubscription
-    public function cancelSubscription($spTransID = 0, $msisdn = 0)
+    public function cancelSubscription($spTransID = null, $msisdn = null)
     {
         try {
-            if ($spTransID == 0 || $msisdn == 0) {
-                return $this->respondWithError('spTransID and msisdn are required');
+
+            $redirectPortalUrl = 'https://yoga.ndtvdcb.com/web/simato/lifestyle/list-videos.php?cat=Yoga&key=yogaSutra';
+
+            if ($spTransID == null || $msisdn == null) {
+                return redirect($redirectPortalUrl);
             }
             $serviceProviderInfo = ServiceProviderInfo::first();
             $getAOCToken = GetAOCToken::where('spTransID', $spTransID)->first();
@@ -111,25 +91,31 @@ class SubscriptionController extends Controller
             $url = $serviceProviderInfo->aoc_endpoint_url . '/cancelSubscription';
             $response = Http::post($url, $parameters);
             $response = json_decode($response);
-            if ($response->data->errorCode != 00) {
+            if($response->data->errorCode != 00){
                 $data = [
                     'spTransID' => $spTransID,
                     'msisdn' => $msisdn,
                 ];
-                return $this->respondWithSuccess('Subscription already cancelled. Please re-subscribe.', $data);
+                return $this->respondWithSuccess('Subscription already cancelled. Please re-subscribe.',$data);
+                // return redirect($redirectPortalUrl);
             }
-            return $this->respondWithSuccess('Subscription cancelled Successfully', $response->data);
+            // return redirect($redirectPortalUrl);
+            return $this->respondWithSuccess('Subscription Cancelled Successfully', $response->data);
         } catch (\Throwable $th) {
             return $this->respondWithError('Something went wrong', $th->getMessage());
         }
     }
 
     // subscriptionStatus
-    public function subscriptionStatus($spTransID = 0, $msisdn = 0)
+    public function subscriptionStatus($spTransID = null, $msisdn = null)
     {
 
-        if ($spTransID == 0 || $msisdn == 0) {
-            return $this->respondWithError('spTransID and msisdn are required');
+        if ($spTransID == null || $msisdn == null) {
+            $data = [
+                'spTransID' => 'required',
+                'msisdn' => 'required',
+            ];
+            return $this->respondWithError('spTransID and msisdn are required',$data);
         }
 
         $serviceProviderInfo = ServiceProviderInfo::first();

@@ -25,6 +25,7 @@ class CallBackController extends Controller
             $getHitLog = HitLog::select()->where('get_aoc_token_id', $getAOCTokenRes->get_aoc_token_id)->first();
             $service = Service::where('keyword', $getHitLog->keyword)->first();        
             
+            
             $redirect = $service->redirect_url . "?aocTransID=" . $request->aocTransID;
 
             return redirect($redirect);

@@ -21,6 +21,7 @@ class NDTVController extends Controller
     {
 
 
+
         $request->method() == 'POST' ? $keyword = $request->keyword : $keyword = $keyword;
         $service = Service::where('keyword', $keyword)->first();
         $serviceProviderInfo = ServiceProviderInfo::first();
@@ -29,7 +30,10 @@ class NDTVController extends Controller
         $callback = env('APP_URL') . '/callback';
         $subscriptionID = $this->getSubscriptionID();
         $spTransID = $this->getSPTransID();
-        $unSubURL = env('APP_URL') . '/api/cancelSubscription/' . $spTransID . '/+8801818401065';
+        $unSubURL = 'https://yoga.ndtvdcb.com/web';
+        // $unSubURL = env('APP_URL') . '/api/cancelSubscription/' . $spTransID . '/+8801818401065';
+
+        // https://yoga.ndtvdcb.com/web/simato/lifestyle/list-videos.php?cat=Yoga&key=yogaSutra
 
         $subscriptionDuration = 2;
         if($service->validity == 'monthly'){
@@ -59,14 +63,13 @@ class NDTVController extends Controller
             'amount' => $service->charge,
             'operator' => 'Robi',
             'taxAmount' => '0.1',
-            'contactInfo' => 'tushar@b2m-tech.com',
+            'contactInfo' => 'cservice@b2m-tech.com',
         ];
 
+        $getAOCToken = GetAOCToken::create($tokenInfos);
         $response = Http::post($serviceProviderInfo->aoc_getAOCToken_url, $tokenInfos);
         $response = json_decode($response);
         if ($response) {
-            $getAOCToken = GetAOCToken::create($tokenInfos);
-
             $aocTokenResponse = GetAOCTokenResponse::create([
                 'get_aoc_token_id' => $getAOCToken->id,
                 'aocToken' => $response->data->aocToken,
@@ -146,8 +149,22 @@ class NDTVController extends Controller
         $response = Http::post($url,$parameters);
         $response = json_decode($response);
 
+        
         if($response->data->errorCode != 00){
-            return $this->respondWithError("Charge status", $response->data->errorMessage);
+            $erroe_msg = $response->data->errorMessage;
+            $substringToFind = "Service is deactivated";
+    
+            if (strpos($erroe_msg, $substringToFind) !== false) {
+                $erroe_msg = 'You cannot subscribe at this moment, your number is blacklisted.';
+            }
+    
+            return response()->json([
+                'status'   => false,
+                'errors'  => true,
+                'message'  => "Charge status",
+                'code' => $response->data->errorCode,
+                'data'     => $erroe_msg
+            ], 203);
         }
         $chargeStatus = new ChargeStatusResponse();
         $chargeStatus->aocTransID = $aocTransID;
@@ -164,7 +181,14 @@ class NDTVController extends Controller
             'charge_status_response_id' => $chargeStatus->id,
             'data' => json_encode($response->data),
         ]);
-        return $this->respondWithSuccess("Charge status", $response->data);
+
+        return response()->json([
+            'status'   => true,
+            'errors'  => false,
+            'message'  => 'Charge status',
+            'code' => $response->data->errorCode,
+            'data'     => $response->data
+        ], 200);
     }
 
     
