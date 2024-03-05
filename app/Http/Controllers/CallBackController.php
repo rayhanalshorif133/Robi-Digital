@@ -15,6 +15,7 @@ class CallBackController extends Controller
     public function callback(Request $request)
     {
         try {
+            // dd($request);
             $data = $request->all();
             $callback = new Callback();
             $callback->aocTransID = $data['aocTransID'];

@@ -28,9 +28,13 @@ Route::get('redirect/{aocTransID}', [NDTVController::class, 'redirect'])->name('
 
 Route::get('chargeStatus/{aocTransID}', [NDTVController::class, 'chargeStatus'])->name('chargeStatus');
 
-
+// 01862171058
+// https://rd.b2mwap.com/api/renewSubscription/B2M6iZyIm/+8801841253973
 Route::get('renewSubscription/{spTransID?}/{msisdn?}', [SubscriptionController::class, 'renewSubscription'])->name('renewSubscription');
+
 Route::get('cancelSubscription/{spTransID?}/{msisdn?}', [SubscriptionController::class, 'cancelSubscription'])->name('cancelSubscription');
+
+// https://rd.b2mwap.com/api/subscriptionStatus/B2M6iZyIm/+8801841253973
 Route::get('subscriptionStatus/{spTransID?}/{msisdn?}', [SubscriptionController::class, 'subscriptionStatus'])->name('subscriptionStatus');
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\GetAOCToken;
+use App\Models\RenewSubscription;
 use App\Models\ServiceProviderInfo;
 use Illuminate\Support\Facades\Http;
 
@@ -14,7 +15,7 @@ class SubscriptionController extends Controller
     public function renewSubscription($spTransID = null, $msisdn = null)
     {
 
-
+        
         if ($spTransID == null || $msisdn == null) {
 
             $data = [
@@ -23,10 +24,29 @@ class SubscriptionController extends Controller
             ];
             return $this->respondWithError('spTransID and msisdn are required',$data);
         }
+        
+        if (substr($msisdn, 0, 3) != '+88') {
+            $msisdn = '+88' . $msisdn;
+        }
 
 
         $serviceProviderInfo = ServiceProviderInfo::first();
         $getAOCToken = GetAOCToken::where('spTransID', $spTransID)->first();
+
+        
+        if ($getAOCToken == null) {
+            $data = [
+                'spTransID' => $spTransID,
+                'msisdn' => $msisdn,
+            ];
+            $renewSubscription = new RenewSubscription();
+            $renewSubscription->old_spTransID = $spTransID;
+            $renewSubscription->msisdn = $msisdn;
+            $renewSubscription->response_message = 'spTransID not found';
+            $renewSubscription->save();
+            return $this->respondWithError('spTransID not found',$data);
+        }
+
 
         $NDTVController = new NDTVController();
         $spTransID = $NDTVController->getSPTransID();
@@ -53,18 +73,35 @@ class SubscriptionController extends Controller
         $response = Http::post($url, $parameters);
         $response = json_decode($response);
 
+
+        
+        $renewSubscription->msisdn = $msisdn;
+        $renewSubscription->old_spTransID = $getAOCToken->spTransID;
+        $renewSubscription->new_spTransID = $spTransID;
+        $renewSubscription->sent_raw_parameter = json_encode($parameters);
+        $renewSubscription->subscription_id = $getAOCToken->subscriptionID;
+        $renewSubscription->url = $url;
+        $renewSubscription->response = json_encode($response);
+        $renewSubscription->response_data = json_encode($response->data);
+        $renewSubscription->response_message = $response->message;
+            
+            
         if($response->data->errorCode != 00){
+            $renewSubscription->response_code = $response->data->errorCode;
+            $renewSubscription->save();
             $data = [
+                'errorCode' => $response->data->errorCode,
                 'spTransID' => $spTransID,
                 'msisdn' => $msisdn,
                 'subscriptionID' => $getAOCToken->subscriptionID
             ];
              
-            return $this->respondWithSuccess('Subscription already renewed. Please try again later.',$data);
+            return $this->respondWithSuccess($response->data->errorMessage,$data);
         }
 
         $getAOCToken->spTransID = $spTransID;
         $getAOCToken->save();
+        $renewSubscription->save();
         return $this->respondWithSuccess('Subscription Renewed Successfully', $response->data);
     }
 

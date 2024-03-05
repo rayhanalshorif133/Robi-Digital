@@ -23,6 +23,13 @@ class NDTVController extends Controller
 
 
         $request->method() == 'POST' ? $keyword = $request->keyword : $keyword = $keyword;
+
+        if($keyword == null){
+            return  $this->respondWithError("Keyword are required", [
+                'keyword' => 'required',
+            ]);
+        }
+
         $service = Service::where('keyword', $keyword)->first();
         $serviceProviderInfo = ServiceProviderInfo::first();
 
@@ -30,17 +37,22 @@ class NDTVController extends Controller
         $callback = env('APP_URL') . '/callback';
         $subscriptionID = $this->getSubscriptionID();
         $spTransID = $this->getSPTransID();
-        $unSubURL = 'https://yoga.ndtvdcb.com/web';
+        $unSubURL = 'yoga.ndtvdcb.com/web';
         // $unSubURL = env('APP_URL') . '/api/cancelSubscription/' . $spTransID . '/+8801818401065';
 
         // https://yoga.ndtvdcb.com/web/simato/lifestyle/list-videos.php?cat=Yoga&key=yogaSutra
 
         $subscriptionDuration = 2;
+        $subscriptionName = 'Yoga Daily';
         if($service->validity == 'monthly'){
             $subscriptionDuration = 30;
+            $subscriptionName = 'Yoga Monthly';
         }elseif($service->validity == 'weekly'){
             $subscriptionDuration = 7;
+            $subscriptionName = 'Yoga Weekly';
         }
+
+        
 
         $tokenInfos = [
             'apiKey' => $serviceProviderInfo->sp_api_key,
@@ -54,7 +66,7 @@ class NDTVController extends Controller
             'channel' => $service->channel,
             'isSubscription' => true,
             'subscriptionID' => $subscriptionID,
-            'subscriptionName' => $service->type,
+            'subscriptionName' => $subscriptionName,
             'subscriptionDuration' => $subscriptionDuration,
             'unSubURL' => $unSubURL,
             'callbackURL' => $callback,
@@ -109,6 +121,8 @@ class NDTVController extends Controller
             return $this->respondWithError("Something went wrong!");
         }
     }
+
+   
     
     public function redirect($aocTransID){
         $serviceProviderInfo = ServiceProviderInfo::first();
@@ -190,6 +204,9 @@ class NDTVController extends Controller
             'data'     => $response->data
         ], 200);
     }
+
+
+
 
     
 }
