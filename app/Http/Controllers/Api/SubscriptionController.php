@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\GetAOCToken;
+use App\Models\Service;
 use App\Models\RenewSubscription;
 use App\Models\ServiceProviderInfo;
 use Illuminate\Support\Facades\Http;
@@ -14,7 +15,6 @@ class SubscriptionController extends Controller
     // renewSubscription
     public function renewSubscription($spTransID = null, $msisdn = null)
     {
-
         
         if ($spTransID == null || $msisdn == null) {
 
@@ -25,13 +25,19 @@ class SubscriptionController extends Controller
             return $this->respondWithError('spTransID and msisdn are required',$data);
         }
         
+
         if (substr($msisdn, 0, 3) != '+88') {
-            $msisdn = '+88' . $msisdn;
+            $msisdn = '+88' . substr($msisdn, 2, 12);
         }
+
+
+
+
 
 
         $serviceProviderInfo = ServiceProviderInfo::first();
         $getAOCToken = GetAOCToken::where('spTransID', $spTransID)->first();
+
 
         
         if ($getAOCToken == null) {
@@ -51,6 +57,7 @@ class SubscriptionController extends Controller
         $NDTVController = new NDTVController();
         $spTransID = $NDTVController->getSPTransID();
 
+
         $parameters = [
             'apiKey' => $serviceProviderInfo->sp_api_key,
             'username' => $serviceProviderInfo->sp_username,
@@ -69,23 +76,41 @@ class SubscriptionController extends Controller
             'unSubURL' => $getAOCToken->unSubURL,
             'contactInfo' => $getAOCToken->contactInfo,
         ];
+        $GET_MSISDN = $msisdn;
         $url = $serviceProviderInfo->aoc_endpoint_url . '/renewSubscription';
         $response = Http::post($url, $parameters);
         $response = json_decode($response);
 
-
         
-        $renewSubscription->msisdn = $msisdn;
+        $subscriptionName = $getAOCToken->subscriptionName;
+        $subscriptionName = substr($subscriptionName, 5); // Start from the 6th character
+        $subscriptionName = strtolower($subscriptionName); // Convert to lowercase
+
+
+
+        if($getAOCToken->subscriptionDuration == "2"){
+            $keyword = 'NYD';
+        }else{
+            $keyword = 'NDW';
+        }
+        $service = Service::where('keyword', 'like', '%' . $keyword . '%')->first();
+
+        $renewSubscription = new RenewSubscription();
+        $renewSubscription->msisdn = $GET_MSISDN;
+        $renewSubscription->amount = $service->charge;
         $renewSubscription->old_spTransID = $getAOCToken->spTransID;
         $renewSubscription->new_spTransID = $spTransID;
         $renewSubscription->sent_raw_parameter = json_encode($parameters);
         $renewSubscription->subscription_id = $getAOCToken->subscriptionID;
         $renewSubscription->url = $url;
+        $renewSubscription->keyword = $service->keyword;
         $renewSubscription->response = json_encode($response);
         $renewSubscription->response_data = json_encode($response->data);
-        $renewSubscription->response_message = $response->message;
+        $renewSubscription->response_message = $response->data->errorMessage;
             
             
+        
+
         if($response->data->errorCode != 00){
             $renewSubscription->response_code = $response->data->errorCode;
             $renewSubscription->save();
@@ -96,7 +121,7 @@ class SubscriptionController extends Controller
                 'subscriptionID' => $getAOCToken->subscriptionID
             ];
              
-            return $this->respondWithSuccess($response->data->errorMessage,$data);
+            return $this->respondWithError($response->data->errorMessage,$data);
         }
 
         $getAOCToken->spTransID = $spTransID;
@@ -128,15 +153,17 @@ class SubscriptionController extends Controller
             $url = $serviceProviderInfo->aoc_endpoint_url . '/cancelSubscription';
             $response = Http::post($url, $parameters);
             $response = json_decode($response);
+            $getAOCToken->isSubscription = 0;
+            $getAOCToken->save();
             if($response->data->errorCode != 00){
                 $data = [
                     'spTransID' => $spTransID,
                     'msisdn' => $msisdn,
                 ];
                 return $this->respondWithSuccess('Subscription already cancelled. Please re-subscribe.',$data);
-                // return redirect($redirectPortalUrl);
+            }else{
+                
             }
-            // return redirect($redirectPortalUrl);
             return $this->respondWithSuccess('Subscription Cancelled Successfully', $response->data);
         } catch (\Throwable $th) {
             return $this->respondWithError('Something went wrong', $th->getMessage());

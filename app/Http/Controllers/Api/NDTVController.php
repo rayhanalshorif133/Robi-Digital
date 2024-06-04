@@ -79,6 +79,7 @@ class NDTVController extends Controller
         ];
 
         $getAOCToken = GetAOCToken::create($tokenInfos);
+
         $response = Http::post($serviceProviderInfo->aoc_getAOCToken_url, $tokenInfos);
         $response = json_decode($response);
         if ($response) {

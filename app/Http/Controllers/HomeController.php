@@ -25,6 +25,11 @@ class HomeController extends Controller
      */
     public function index()
     {
+      
+
+        
+
+
         $hitLogs = HitLog::count();
         $services = Service::count();
         return view('home', compact('services', 'hitLogs'));

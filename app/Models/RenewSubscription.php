@@ -18,6 +18,8 @@ class RenewSubscription extends Model
         'sent_raw_parameter',
         'subscription_id',
         'url',
+        'amount',
+        'keyword',
         'response_code',
         'response',
         'response_data',

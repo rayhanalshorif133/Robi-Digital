@@ -75,6 +75,14 @@
                         <p><b>Subscription ID:</b> {{$hitLog->getAOCToken->subscriptionID}}</p>
                         <p><b>Subscription Duration:</b> {{$hitLog->getAOCToken->subscriptionDuration}} Days</p>
                         <p><b>UnSubscription URL:</b> {{$hitLog->getAOCToken->unSubURL}}</p>
+                        <p><b>UnSubscription API:</b> 
+                            @php
+                             $unSubscriptionApi =  'https://rd.b2mwap.com/api/cancelSubscription/' . $hitLog->getAOCToken->spTransID .'/' . $hitLog->getAOCToken->msisdn;
+                            @endphp
+                            <a href="{{$unSubscriptionApi}}" target="_blank" title="Click to unSubscription">
+                                {{$unSubscriptionApi}}
+                            </a>
+                        </p>
                         @endif
                         <hr/>
                     </div>

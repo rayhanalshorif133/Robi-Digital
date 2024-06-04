@@ -5,20 +5,11 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CallBackController;
 use App\Http\Controllers\ServiceProviderInfoController;
+use App\Http\Controllers\RenewController;
 use App\Http\Controllers\TokenController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 Route::get('/', function () {
     // return view('welcome');
@@ -39,11 +30,8 @@ Route::resource('service-provider-info', ServiceProviderInfoController::class);
 Route::get('callback', [CallBackController::class, 'callback'])->name('callback');
 
 
-Route::prefix('hit_log')
-    ->name('hit_log.')
-    ->group(function () {
-        Route::get('sent/{id?}', [HitLogController::class, 'sent'])->name('sent');
-        Route::get('received', [HitLogController::class, 'received'])->name('received');
-    });
+Route::get('hit_log/sent/{id?}', [HitLogController::class, 'sent'])->name('hit_log.sent');
+    
+Route::get('renew-log/{id?}', [RenewController::class, 'index'])->name('renew-log.index');
 
 

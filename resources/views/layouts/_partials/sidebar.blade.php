@@ -75,32 +75,21 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item @if ($routeName == 'hit_log.sent' || $routeName == 'hit_log.received') menu-is-opening menu-open @endif ">
-                    <a href="#" class="nav-link @if($routeName == 'hit_log.sent' || $routeName == 'hit_log.received') active @endif">
-                        <i class="nav-icon fa-solid fa-bolt"></i>
+                <li class="nav-item">
+                    <a href="{{ route('hit_log.sent') }}" class="nav-link @if ($routeName == 'hit_log.sent') active @endif">
+                        <i class="nav-icon fa-solid fa-paper-plane"></i>
                         <p>
-                          Hit Logs
-                            <i class="fas fa-angle-left right"></i>
+                            Sent Logs
                         </p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('hit_log.sent') }}" class="nav-link  @if ($routeName == 'hit_log.sent') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Sent Logs
-                                </p>
-                            </a>
-                        </li>
-                        {{-- <li class="nav-item">
-                            <a href="{{ route('hit_log.received') }}" class="nav-link  @if ($routeName == 'hit_log.received') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>
-                                    Received Logs
-                                </p>
-                            </a>
-                        </li> --}}
-                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('renew-log.index') }}" class="nav-link @if ($routeName == 'renew-log.index') active @endif">
+                        <i class="nav-icon fa-solid fa-repeat"></i>
+                        <p>
+                            Renew Logs
+                        </p>
+                    </a>
                 </li>
             </ul>
         </nav>
