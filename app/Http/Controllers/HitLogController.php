@@ -75,39 +75,40 @@ class HitLogController extends Controller
         dd($hitLogs);
     }
 
-    public function chargeLog(){
+    public function subUnsubLog(Request $request){
 
 
-        
-        
-        $hitLogs = HitLog::orderBy('id', 'desc')->with('getAOCToken')
-            ->take(10)
-            ->get();
-        $start_date = '2023-09-26';
-        $end_date = '2024-05-05';
-        $hitLogs = DB::table('hit_logs')
-                    ->join('get_a_o_c_tokens', 'hit_logs.get_aoc_token_id', '=', 'get_a_o_c_tokens.id')
-                    ->whereBetween('hit_logs.date', [$start_date, $end_date])
-                    ->select('hit_logs.keyword','get_a_o_c_tokens.isSubscription', DB::raw('COUNT(*) as total'))
-                    ->groupBy('hit_logs.keyword','get_a_o_c_tokens.isSubscription')
+        if (request()->ajax()) {
+
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+            $subsAndUnsubs = DB::table('sub_un_sub_logs')
+                    ->whereBetween('sub_un_sub_logs.opt_date', [$start_date, $end_date])
+                    ->select(
+                        'sub_un_sub_logs.keyword',
+                        'sub_un_sub_logs.status',
+                        DB::raw('COUNT(*) as total'),
+                        DB::raw('SUM(CASE WHEN sub_un_sub_logs.status = "1" THEN 1 ELSE 0 END) as subscount'),
+                        DB::raw('SUM(CASE WHEN sub_un_sub_logs.status = "0" THEN 1 ELSE 0 END) as unsubscount')
+                    )
+                    ->groupBy('sub_un_sub_logs.keyword', 'sub_un_sub_logs.status')
                     ->get();
-        dd($hitLogs);
-        $uniqueKeywords = $hitLogs->pluck('keyword')->unique()->toArray();
-        dd($uniqueKeywords);
-        // sum as par unique keywords
-        $data = [];
-        foreach ($uniqueKeywords as $keyword) {
-            $data[] = [
-                'keyword' => $keyword,
-                'subscount' => $subsAndUnsubs->where('keyword', $keyword)->sum('subscount'),
-                'unsubscount' => $subsAndUnsubs->where('keyword', $keyword)->sum('unsubscount'),
-            ];
+            $uniqueKeywords = $subsAndUnsubs->pluck('keyword')->unique()->toArray();
+
+            // sum as par unique keywords
+            $data = [];
+            foreach ($uniqueKeywords as $keyword) {
+                $data[] = [
+                    'keyword' => $keyword,
+                    'subscount' => $subsAndUnsubs->where('keyword', $keyword)->sum('subscount'),
+                    'unsubscount' => $subsAndUnsubs->where('keyword', $keyword)->sum('unsubscount'),
+                ];
+            }
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->rawColumns(['action'])
+                ->toJson();
         }
-        // if (request()->ajax()) {
-        //     return DataTables::of($query)
-        //         ->rawColumns(['action'])
-        //         ->toJson();
-        // }
-        // return view('hit_log.charge_log');
+        return view('hit_log.sub_unsub_log');
     }
 }

@@ -9,7 +9,7 @@
             {{ $title }}
             |    
         @endisset
-         {{ env('APP_NAME') }} 
+         Robi Digital
     </title>
 
     <!-- Google Font: Source Sans Pro -->
