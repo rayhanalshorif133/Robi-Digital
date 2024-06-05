@@ -7,6 +7,8 @@ use App\Models\GetAOCToken;
 use App\Models\Service;
 use App\Models\RenewSubscription;
 use App\Models\ServiceProviderInfo;
+use App\Models\Subscriber;
+use App\Models\SubUnSubLog;
 use Illuminate\Support\Facades\Http;
 
 
@@ -140,6 +142,25 @@ class SubscriptionController extends Controller
             if ($spTransID == null || $msisdn == null) {
                 return redirect($redirectPortalUrl);
             }
+
+             // $spTransID = null, $msisdn = null
+             $subs = Subscriber::select()
+                ->where('msisdn', 'LIKE', $msisdn)
+                ->where('status', 1)
+                ->orderBy('created_at', 'DESC')
+                ->first();
+                
+                
+                
+                if(!$subs){
+                    $data = [
+                        'spTransID' => $spTransID,
+                        'msisdn' => $msisdn,
+                    ];
+                    return $this->respondWithSuccess('Subscription already cancelled. Please re-subscribe.',$data);
+                }
+                
+
             $serviceProviderInfo = ServiceProviderInfo::first();
             $getAOCToken = GetAOCToken::where('spTransID', $spTransID)->first();
             $parameters = [
@@ -155,15 +176,32 @@ class SubscriptionController extends Controller
             $response = json_decode($response);
             $getAOCToken->isSubscription = 0;
             $getAOCToken->save();
+
             if($response->data->errorCode != 00){
                 $data = [
                     'spTransID' => $spTransID,
                     'msisdn' => $msisdn,
                 ];
                 return $this->respondWithSuccess('Subscription already cancelled. Please re-subscribe.',$data);
-            }else{
-                
             }
+
+
+            $subs->status = 0;
+            $subs->subs_date = null;
+            $subs->unsubs_date = date('Y-m-d H:i:s');
+            $subs->save();
+           
+
+            $subUn = new SubUnSubLog();
+            $subUn->msisdn = $subs->msisdn;
+            $subUn->keyword = $subs->keyword;
+            $subUn->status = $subs->status;
+            $subUn->subscriptionID = $subs->subscriptionID;
+            $subUn->flag = 'unsub';
+            $subUn->opt_date = date('Y-m-d');
+            $subUn->opt_time = date('H:i:s');
+            $subUn->save();
+
             return $this->respondWithSuccess('Subscription Cancelled Successfully', $response->data);
         } catch (\Throwable $th) {
             return $this->respondWithError('Something went wrong', $th->getMessage());

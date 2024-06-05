@@ -22,7 +22,9 @@
             </div>
             <div class="info">
                 <a href="#" class="d-block text-capitalize">
-                    {{ Auth::user()->name }}
+                    @if(Auth::check())
+                        {{ Auth::user()->name }}
+                    @endif
                 </a>
             </div>
         </div>
@@ -88,6 +90,14 @@
                         <i class="nav-icon fa-solid fa-repeat"></i>
                         <p>
                             Renew Logs
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('charge-log') }}" class="nav-link @if ($routeName == 'charge-log') active @endif">
+                        <i class="nav-icon fa-solid fa-bolt"></i>
+                        <p>
+                            Charge Log
                         </p>
                     </a>
                 </li>

@@ -10,6 +10,7 @@ use App\Models\GetAOCTokenLog;
 use App\Models\GetAOCTokenResponse;
 use App\Models\HitLog;
 use App\Models\Service;
+use App\Models\Subscriber;
 use App\Models\ServiceProviderInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -33,14 +34,10 @@ class NDTVController extends Controller
         $service = Service::where('keyword', $keyword)->first();
         $serviceProviderInfo = ServiceProviderInfo::first();
 
-        // basedURL
-        $callback = env('APP_URL') . '/callback';
-        $subscriptionID = $this->getSubscriptionID();
-        $spTransID = $this->getSPTransID();
-        $unSubURL = 'yoga.ndtvdcb.com/web';
-        // $unSubURL = env('APP_URL') . '/api/cancelSubscription/' . $spTransID . '/+8801818401065';
+       
+        
+       
 
-        // https://yoga.ndtvdcb.com/web/simato/lifestyle/list-videos.php?cat=Yoga&key=yogaSutra
 
         $subscriptionDuration = 2;
         $subscriptionName = 'Yoga Daily';
@@ -51,6 +48,31 @@ class NDTVController extends Controller
             $subscriptionDuration = 7;
             $subscriptionName = 'Yoga Weekly';
         }
+
+
+        // basedURL
+        $subscriptionID = $this->getSubscriptionID();
+        $spTransID = $this->getSPTransID();
+        // New Subscription
+        $newSubs = new Subscriber();
+        $newSubs->status = 0;
+        $newSubs->keyword = $keyword;
+        $newSubs->subscriptionID = $subscriptionID;
+        $newSubs->spTransID = $spTransID;
+        $newSubs->subscriptionDuration = $subscriptionDuration;
+        $newSubs->subs_date = date('Y-m-d H:i:s');
+        $newSubs->unsubs_date = null;
+        $newSubs->flag = 'pending';
+        $newSubs->save();
+
+        
+        $callback = url('callback/' . $newSubs->id);
+
+        $unSubURL = 'yoga.ndtvdcb.com/web';
+
+        // https://yoga.ndtvdcb.com/web/simato/lifestyle/list-videos.php?cat=Yoga&key=yogaSutra
+
+        
 
         
 
@@ -79,10 +101,13 @@ class NDTVController extends Controller
         ];
 
         $getAOCToken = GetAOCToken::create($tokenInfos);
+        $getAOCToken->isSubscription = false;
+        $getAOCToken->save();
 
         $response = Http::post($serviceProviderInfo->aoc_getAOCToken_url, $tokenInfos);
         $response = json_decode($response);
         if ($response) {
+            
             $aocTokenResponse = GetAOCTokenResponse::create([
                 'get_aoc_token_id' => $getAOCToken->id,
                 'aocToken' => $response->data->aocToken,
@@ -102,7 +127,7 @@ class NDTVController extends Controller
             $sendData = [
                 'aocTransID' => $response->data->aocTransID,
                 'spTransID' => $getAOCToken->spTransID,
-                'redirectURL' => env('APP_URL') . '/api/redirect/' . $response->data->aocTransID,
+                'redirectURL' => url('/api/redirect/' . $response->data->aocTransID),
             ];
 
             // HitLog

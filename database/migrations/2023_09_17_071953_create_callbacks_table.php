@@ -16,7 +16,7 @@ class CreateCallbacksTable extends Migration
         Schema::create('callbacks', function (Blueprint $table) {
             $table->id();
             $table->string('aocTransID')->nullable();
-            $table->text('raw_data')->nullable();
+            $table->json('raw_data')->nullable();
             $table->timestamps();
         });
     }

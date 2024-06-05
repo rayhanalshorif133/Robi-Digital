@@ -30,6 +30,7 @@
                             <th>Keyword</th>
                             <th>Time</th>
                             <th>Date</th>
+                            <th>Is Subscription</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -73,6 +74,16 @@
                     {
                         render: function(data, type, row) {
                             return moment(row.date).format('DD-MMM-YYYY');
+                        },
+                        targets: 0,
+                    },
+                    {
+                        render: function(data, type, row) {
+                            console.log(row.get_a_o_c_token.isSubscription)
+                            const is_subs = row.get_a_o_c_token.isSubscription;
+                            const status = is_subs == 1? '<span class="badge bg-success">True</span>' :
+                            '<span class="badge bg-danger">False</span>';
+                            return status;
                         },
                         targets: 0,
                     },
