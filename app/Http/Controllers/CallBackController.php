@@ -16,13 +16,14 @@ use App\Models\SubUnSubLog;
 
 class CallBackController extends Controller
 {
-    // https://rd.b2mwap.com/callback/5?aocTransID=TR6639069258
+    // https://rd.b2mwap.com/callback/26?aocTransID=TR6639302919
 
     public function callback(Request $request, $subscription_id)
     {
         try {
 
 
+            
 
             $data = $request->all();
 
@@ -47,13 +48,14 @@ class CallBackController extends Controller
             $url = url('api/chargeStatus/' . $request->aocTransID);
             $res = Http::get($url);
             $res = $res->json();
+
             
-           
+            
             if($res['code'] == '00'){
                 $msisdn = $res['data']['msisdn'];
                 $charged = $res['data']['totalAmountCharged'];
                 $GET_SUBS->charge = $charged;
-
+                
                 if($msisdn){
                     $getAOCToken->msisdn = $msisdn;                    
                     $getAOCToken->isSubscription = true;
@@ -65,15 +67,21 @@ class CallBackController extends Controller
 
 
              // check Subscription
-            $urlSubscriptionCheckStatus = url('api/subscriptionStatus/' . $GET_SUBS->spTransID . '/' . $GET_SUBS->msisdn);
+            $urlSubscriptionCheckStatus = url('api/subscriptionStatus/' . $GET_SUBS->spTransID . '/' . $getAOCToken->msisdn);
             $response = Http::get($urlSubscriptionCheckStatus);
             $response = $response->json();
 
             if($response['status'] == true && $response['data']['status'] == 'subscribed'){
+                $GET_MSISDN = $response['data']['msisdn'];
                 $GET_SUBS->status = 1;
-                $GET_SUBS->msisdn = $response['data']['msisdn'];
-                $getAOCToken->msisdn = $response['data']['msisdn'];  
+                $GET_SUBS->msisdn = $GET_MSISDN;
+                $getAOCToken->msisdn = $GET_MSISDN;  
                 $GET_SUBS->flag = 'Success from API';
+                // if this number is exsits and delete this duplicate
+                Subscriber::select()
+                    ->where('msisdn', 'like' , '%' . $GET_MSISDN . '%')
+                    ->where('id', '!=', $subscription_id)
+                    ->delete();
             }else{
                 $GET_SUBS->status = 0;
                 $GET_SUBS->flag = 'Failed to Charge (API)';

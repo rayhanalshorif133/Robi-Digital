@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
+
 
 class HitLogController extends Controller
 {
@@ -78,21 +80,24 @@ class HitLogController extends Controller
     public function subUnsubLog(Request $request){
 
 
+        
+
         if (request()->ajax()) {
 
             $start_date = $request->start_date;
             $end_date = $request->end_date;
-            $subsAndUnsubs = DB::table('sub_un_sub_logs')
-                    ->whereBetween('sub_un_sub_logs.opt_date', [$start_date, $end_date])
-                    ->select(
-                        'sub_un_sub_logs.keyword',
-                        'sub_un_sub_logs.status',
-                        DB::raw('COUNT(*) as total'),
-                        DB::raw('SUM(CASE WHEN sub_un_sub_logs.status = "1" THEN 1 ELSE 0 END) as subscount'),
-                        DB::raw('SUM(CASE WHEN sub_un_sub_logs.status = "0" THEN 1 ELSE 0 END) as unsubscount')
-                    )
-                    ->groupBy('sub_un_sub_logs.keyword', 'sub_un_sub_logs.status')
-                    ->get();
+            $end_date_plus_one = Carbon::parse($end_date)->addDay()->format('Y-m-d');
+            $subsAndUnsubs = DB::table('subscribers')
+                ->whereBetween('subscribers.updated_at', [$start_date, $end_date_plus_one])
+                ->select(
+                    'subscribers.keyword',
+                    'subscribers.status',
+                    DB::raw('COUNT(*) as total'),
+                    DB::raw('SUM(CASE WHEN subscribers.status = "1" THEN 1 ELSE 0 END) as subscount'),
+                    DB::raw('SUM(CASE WHEN subscribers.status = "0" THEN 1 ELSE 0 END) as unsubscount')
+                )
+                ->groupBy('subscribers.keyword', 'subscribers.status')
+                ->get();
             $uniqueKeywords = $subsAndUnsubs->pluck('keyword')->unique()->toArray();
 
             // sum as par unique keywords
