@@ -32,8 +32,6 @@ class ServiceProviderInfoController extends Controller
         $serviceProviderInfo = ServiceProviderInfo::find($serviceProviderInfo);
         $serviceProviderInfo->aoc_endpoint_url = $request->aoc_endpoint_url;
         $serviceProviderInfo->aoc_redirection_url = $request->aoc_redirection_url;
-        $serviceProviderInfo->sp_username = $request->sp_username;
-        $serviceProviderInfo->sp_api_key = $request->sp_api_key;
         $serviceProviderInfo->aoc_getAOCToken_url = $request->aoc_getAOCToken_url;
         $serviceProviderInfo->save();
         flash()->addSuccess('Service Provider Info updated successfully!');

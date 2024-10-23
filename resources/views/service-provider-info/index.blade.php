@@ -51,20 +51,6 @@
                                         placeholder="Enter Get AOC Token URL" value="{{$serviceProviderInfo->aoc_getAOCToken_url}}">
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="sp_username" class="required">SP Username</label>
-                                    <input type="text" name="sp_username" id="sp_username" required class="form-control"
-                                        placeholder="Enter Service Name" value="{{$serviceProviderInfo->sp_username}}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="sp_api_key" class="required">SP API Key</label>
-                                    <input type="text" name="sp_api_key" id="sp_api_key" required class="form-control"
-                                        placeholder="Enter Service Name" value="{{$serviceProviderInfo->sp_api_key}}">
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">

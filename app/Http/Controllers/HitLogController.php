@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\GetAOCToken;
 use App\Models\HitLog;
-use App\Models\Subscriber;
-use App\Models\SubUnSubLog;
 use App\Models\GetAOCTokenResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -23,8 +21,9 @@ class HitLogController extends Controller
     }
 
 
-    public function sent($id = null)
+    public function sent(Request $request, $id = null)
     {
+    
 
         if($id){
             $hitLog = HitLog::where('id', $id)
@@ -35,7 +34,10 @@ class HitLogController extends Controller
         }
 
         if (request()->ajax()) {
-            $query = HitLog::orderBy('id', 'desc')->with('getAOCToken')->get();
+            $query = HitLog::orderBy('id', 'desc')
+                ->with('getAOCToken')
+                ->whereBetween('date', [$request->start_date, $request->end_date])
+                ->get();
             return DataTables::of($query)
                 ->rawColumns(['action'])
                 ->toJson();

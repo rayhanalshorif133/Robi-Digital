@@ -35,20 +35,6 @@ class NDTVController extends Controller
         $serviceProviderInfo = ServiceProviderInfo::first();
 
        
-        
-       
-
-
-        $subscriptionDuration = 2;
-        $subscriptionName = 'Yoga Daily';
-        if($service->validity == 'monthly'){
-            $subscriptionDuration = 30;
-            $subscriptionName = 'Yoga Monthly';
-        }elseif($service->validity == 'weekly'){
-            $subscriptionDuration = 7;
-            $subscriptionName = 'Yoga Weekly';
-        }
-
 
         // basedURL
         $subscriptionID = $this->getSubscriptionID();
@@ -59,7 +45,7 @@ class NDTVController extends Controller
         $newSubs->keyword = $keyword;
         $newSubs->subscriptionID = $subscriptionID;
         $newSubs->spTransID = $spTransID;
-        $newSubs->subscriptionDuration = $subscriptionDuration;
+        $newSubs->subscriptionDuration = $service->subs_duration;
         $newSubs->subs_date = date('Y-m-d H:i:s');
         $newSubs->unsubs_date = null;
         $newSubs->flag = 'pending';
@@ -68,7 +54,6 @@ class NDTVController extends Controller
         
         $callback = url('callback/' . $newSubs->id);
 
-        $unSubURL = 'yoga.ndtvdcb.com/web';
 
         // https://yoga.ndtvdcb.com/web/simato/lifestyle/list-videos.php?cat=Yoga&key=yogaSutra
 
@@ -77,8 +62,8 @@ class NDTVController extends Controller
         
 
         $tokenInfos = [
-            'apiKey' => $serviceProviderInfo->sp_api_key,
-            'username' => $serviceProviderInfo->sp_username,
+            'apiKey' => $service->api_key,
+            'username' => $service->username,
             'spTransID' => $spTransID,
             'description' => $service->name,
             'onBehalfOf' => $service->on_behalf_of,
@@ -88,9 +73,9 @@ class NDTVController extends Controller
             'channel' => $service->channel,
             'isSubscription' => true,
             'subscriptionID' => $subscriptionID,
-            'subscriptionName' => $subscriptionName,
-            'subscriptionDuration' => $subscriptionDuration,
-            'unSubURL' => $unSubURL,
+            'subscriptionName' => $service->subscription_name,
+            'subscriptionDuration' => $service->subs_duration,
+            'unSubURL' => $service->un_sub_url,
             'callbackURL' => $callback,
             'msisdn' => '',
             'currency' => 'BDT',

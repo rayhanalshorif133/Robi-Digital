@@ -163,6 +163,8 @@
                 .then(function(response) {
                     const data = response.data.data;
                     $(".show_service_name").text(data.name);
+                    $(".show_service_username").text(data.username);
+                    $(".show_service_api_key").text(data.api_key);
                     $(".show_service_type").text(data.type);
                     $(".show_service_validity").text(data.validity);
                     $(".show_service_charge").text(data.charge);
@@ -171,6 +173,7 @@
                     $(".show_channel").text(data.channel);
                     $(".show_on_behalf_of").text(data.on_behalf_of);      
                     $(".show_redirect_url").text(data.redirect_url);            
+                    $(".show_unsubs_url").text(data.un_sub_url);            
                     $("#service-show").modal('show');
                 });
             });

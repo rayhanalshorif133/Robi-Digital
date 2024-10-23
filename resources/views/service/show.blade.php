@@ -12,7 +12,9 @@
             </div>
             <div class="modal-body">
                 <ul class="list-group list-group-unbordered mb-3 px-4">
+                    <li class="list-group-item"><b>Username:</b> <span class="text-gray float-right show_service_username"></span></li>
                     <li class="list-group-item"><b>Name:</b> <span class="text-gray float-right show_service_name"></span></li>
+                    <li class="list-group-item"><b>api_key:</b> <span class="text-gray float-right show_service_api_key"></span></li>
                     <li class="list-group-item"><b>Type:</b> <span class="text-gray float-right show_service_type"></span></li>
                     <li class="list-group-item"><b>Validity:</b> <span class="text-gray float-right show_service_validity"></span></li>
                     <li class="list-group-item"><b>Charge:</b> <span class="text-gray float-right mx-1">Tk</span><span class="text-gray float-right show_service_charge"></span></li>
@@ -20,6 +22,7 @@
                     <li class="list-group-item"><b>Reference Code:</b> <span class="text-gray float-right show_reference_code"></span></li>
                     <li class="list-group-item"><b>Channel:</b> <span class="text-gray float-right show_channel"></span></li>
                     <li class="list-group-item"><b>Redirect URL:</b> <span class="text-gray float-right show_redirect_url"></span></li>
+                    <li class="list-group-item"><b>Unsubs URL:</b> <span class="text-gray float-right show_unsubs_url"></span></li>
                     <li class="list-group-item"><b>On Behalf of:</b> <span class="text-gray float-right show_on_behalf_of"></span></li>
                 </ul>
             </div>

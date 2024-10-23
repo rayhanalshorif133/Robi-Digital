@@ -15,8 +15,6 @@ class ServiceProviderInfo extends Model
         'aoc_endpoint_url',
         'aoc_redirection_url',
         'aoc_getAOCToken_url',
-        'sp_username',
-        'sp_api_key',
     ];
 
 

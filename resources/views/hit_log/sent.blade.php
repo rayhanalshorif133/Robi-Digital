@@ -16,10 +16,24 @@
     <div class="px-2">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fa-solid fa-paper-plane mr-1"></i>
-                    Hit Log Sent
-                </h3>
+                <div class="d-flex justify-content-between">
+                    <h3 class="card-title">
+                        <i class="fa-solid fa-paper-plane mr-1"></i>
+                        Hit Log Sent
+                    </h3>
+                    <div class="d-flex space-x-2">
+                        @php
+                            $start_date = date('Y-m-d');
+                            $end_date = date('Y-m-d');
+                        @endphp
+                        <input type="date" class="form-control mx-2" id="start_date" value="{{ $start_date }}">
+                        <input type="date" class="form-control" id="end_date" value="{{ $end_date }}">
+                        <button class="btn btn-primary d-flex" id="searchBtn">
+                            <i class="fas fa-search m-1"></i>
+                            Search
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div class="card-body">
@@ -46,14 +60,28 @@
     <script>
         $(function() {
 
-            url = '/hit_log/sent';
+            fetchData();
+            $("#searchBtn").click(() => {
+                fetchData();
+            });
+
+        });
+
+        const fetchData = () => {
+            var start_date = $("#start_date").val();
+            var end_date = $("#end_date").val();
+            var url = '/hit_log/sent?start_date=' + start_date + '&end_date=' + end_date;
+
+            if ($.fn.DataTable.isDataTable('#hitLogSentTableId')) {
+                $('#hitLogSentTableId').DataTable().clear().destroy();
+            }
+
             table = $('#hitLogSentTableId').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: url,
                 ordering: false,
-                columns: [
-                    {
+                columns: [{
                         render: function(data, type, row) {
                             return `<span>${row.get_a_o_c_token?.spTransID}</span>`;
                         },
@@ -79,10 +107,10 @@
                     },
                     {
                         render: function(data, type, row) {
-                            console.log(row.get_a_o_c_token.isSubscription)
                             const is_subs = row.get_a_o_c_token.isSubscription;
-                            const status = is_subs == 1? '<span class="badge bg-success">True</span>' :
-                            '<span class="badge bg-danger">False</span>';
+                            const status = is_subs == 1 ?
+                                '<span class="badge bg-success">True</span>' :
+                                '<span class="badge bg-danger">False</span>';
                             return status;
                         },
                         targets: 0,
@@ -97,6 +125,6 @@
                     },
                 ]
             });
-        });
+        };
     </script>
 @endpush
