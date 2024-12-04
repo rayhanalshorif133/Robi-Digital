@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\GetAOCToken;
 use App\Models\Service;
 use App\Models\RenewSubscription;
+use App\Models\ChargeLog;
 use App\Models\ServiceProviderInfo;
 use App\Models\Subscriber;
 use App\Models\SubUnSubLog;
@@ -39,6 +40,7 @@ class SubscriptionController extends Controller
 
         $serviceProviderInfo = ServiceProviderInfo::first();
         $getAOCToken = GetAOCToken::where('spTransID', $spTransID)->first();
+        $subscriber = Subscriber::where('spTransID', $spTransID)->first();
 
 
 
@@ -47,11 +49,13 @@ class SubscriptionController extends Controller
                 'spTransID' => $spTransID,
                 'msisdn' => $msisdn,
             ];
+
             $renewSubscription = new RenewSubscription();
             $renewSubscription->old_spTransID = $spTransID;
             $renewSubscription->msisdn = $msisdn;
             $renewSubscription->response_message = 'spTransID not found';
             $renewSubscription->save();
+
             return $this->respondWithError('spTransID not found', $data);
         }
 
@@ -90,11 +94,9 @@ class SubscriptionController extends Controller
 
 
 
-        if ($getAOCToken->subscriptionDuration == "2") {
-            $keyword = 'NYD';
-        } else {
-            $keyword = 'NDW';
-        }
+
+        $keyword = $subscriber->keyword;
+
         $service = Service::where('keyword', 'like', '%' . $keyword . '%')->first();
 
         $renewSubscription = new RenewSubscription();
@@ -109,13 +111,15 @@ class SubscriptionController extends Controller
         $renewSubscription->response = json_encode($response);
         $renewSubscription->response_data = json_encode($response->data);
         $renewSubscription->response_message = $response->data->errorMessage;
+        $renewSubscription->response_code = $response->data->errorCode;
+        $renewSubscription->save();
+        $getAOCToken->spTransID = $spTransID;
+        $getAOCToken->save();
 
 
 
 
         if ($response->data->errorCode != 00) {
-            $renewSubscription->response_code = $response->data->errorCode;
-            $renewSubscription->save();
             $data = [
                 'errorCode' => $response->data->errorCode,
                 'spTransID' => $spTransID,
@@ -124,12 +128,19 @@ class SubscriptionController extends Controller
             ];
 
             return $this->respondWithError($response->data->errorMessage, $data);
+        } else {
+            $chargeLog  = new ChargeLog();
+            $chargeLog->spTransID = $spTransID;
+            $chargeLog->msisdn = $GET_MSISDN;
+            $chargeLog->keyword = $keyword;
+            $chargeLog->amount = $service->charge;
+            $chargeLog->type = 'renew';
+            $chargeLog->charge_date = date('Y-m-d');  // Make sure this matches the date format in the database
+            $chargeLog->save();
         }
-
-        $getAOCToken->spTransID = $spTransID;
-        $getAOCToken->save();
-        $renewSubscription->save();
         return $this->respondWithSuccess('Subscription Renewed Successfully', $response->data);
+
+        
     }
 
     // cancelSubscription

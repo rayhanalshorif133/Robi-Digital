@@ -8,6 +8,7 @@ use App\Models\HitLog;
 use App\Models\Service;
 use App\Models\GetAOCToken;
 use App\Models\GetAOCTokenResponse;
+use App\Models\ChargeLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Subscriber;
@@ -93,6 +94,16 @@ class CallBackController extends Controller
                 $subUn->opt_date = date('Y-m-d');
                 $subUn->opt_time = date('H:i:s');
                 $subUn->save();
+
+
+                $chargeLog  = new ChargeLog();
+                $chargeLog->spTransID = $subs->spTransID;
+                $chargeLog->msisdn = $subs->msisdn;
+                $chargeLog->keyword = $subs->keyword;
+                $chargeLog->amount = $charged;
+                $chargeLog->type = 'subs';
+                $chargeLog->charge_date = date('Y-m-d');  // Make sure this matches the date format in the database
+                $chargeLog->save();
                 
                 if($msisdn){
                     $getAOCToken->msisdn = $msisdn;                    

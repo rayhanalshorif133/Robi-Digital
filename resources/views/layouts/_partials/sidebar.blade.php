@@ -78,6 +78,30 @@
                     </ul>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('sub-unsub-log') }}" class="nav-link @if ($routeName == 'sub-unsub-log') active @endif">
+                        <i class="nav-icon fa-solid fa-bolt"></i>
+                        <p>
+                            Sub & Unsubs Logs
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('charge-log') }}" class="nav-link @if ($routeName == 'charge-log') active @endif">
+                        <i class="nav-icon fa-solid fa-bolt"></i>
+                        <p>
+                            Charge logs
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('subs-based') }}" class="nav-link @if ($routeName == 'subs-based') active @endif">
+                        <i class="nav-icon fa-solid fa-bolt"></i>
+                        <p>
+                            Subs based
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('hit_log.sent') }}" class="nav-link @if ($routeName == 'hit_log.sent') active @endif">
                         <i class="nav-icon fa-solid fa-paper-plane"></i>
                         <p>
@@ -93,14 +117,7 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('sub-unsub-log') }}" class="nav-link @if ($routeName == 'sub-unsub-log') active @endif">
-                        <i class="nav-icon fa-solid fa-bolt"></i>
-                        <p>
-                            Sub & Unsubs Logs
-                        </p>
-                    </a>
-                </li>
+                
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
