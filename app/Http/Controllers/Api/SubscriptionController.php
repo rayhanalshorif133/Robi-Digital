@@ -19,6 +19,7 @@ class SubscriptionController extends Controller
     public function renewSubscription($spTransID = null, $msisdn = null)
     {
 
+
         if ($spTransID == null || $msisdn == null) {
 
             $data = [
@@ -113,8 +114,18 @@ class SubscriptionController extends Controller
         $renewSubscription->response_message = $response->data->errorMessage;
         $renewSubscription->response_code = $response->data->errorCode;
         $renewSubscription->save();
+
+        // re new spTransID
         $getAOCToken->spTransID = $spTransID;
         $getAOCToken->save();
+
+        $subscriber->spTransID = $spTransID;
+
+        if(!$subscriber->msisdn){
+            $subscriber->msisdn = $GET_MSISDN;
+        }
+        
+        $subscriber->save();
 
 
 

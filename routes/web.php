@@ -6,7 +6,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CallBackController;
 use App\Http\Controllers\ServiceProviderInfoController;
 use App\Http\Controllers\RenewController;
-use App\Http\Controllers\TokenController;
+use App\Http\Controllers\CustomerLogController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
@@ -45,7 +45,10 @@ Route::get('/check-data', [HitLogController::class, 'checkData'])->name('check-d
 Route::get('/sub-unsub-log', [HitLogController::class, 'subUnsubLog'])->name('sub-unsub-log');
 Route::get('/charge-log', [HitLogController::class, 'chargeLog'])->name('charge-log');
 Route::get('/subs-based', [HitLogController::class, 'subsBased'])->name('subs-based');
-    
+Route::get('/log/yesterday-log', [HitLogController::class, 'yesterdayLog'])->name('yesterday-log');
+
 Route::get('renew-log/{id?}', [RenewController::class, 'index'])->name('renew-log.index');
+
+Route::middleware('auth')->get('/customer-log', [CustomerLogController::class, 'index'])->name('customer-log');
 
 

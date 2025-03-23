@@ -11,6 +11,10 @@ class Callback extends Model
 
     protected $fillable = [
         'aocTransID',
-        'raw_data'
+        'raw_data',
+        'keyword',
+        'code',
+        'status',
+        'message'
     ];
 }

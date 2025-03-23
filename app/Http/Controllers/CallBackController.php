@@ -25,20 +25,7 @@ class CallBackController extends Controller
 
 
 
-            /* 
-             // New Subscription
-            // $newSubs = new Subscriber();
-            // $newSubs->status = 0;
-            // $newSubs->keyword = $keyword;
-            // $newSubs->subscriptionID = $subscriptionID;
-            // $newSubs->spTransID = $spTransID;
-            // $newSubs->subscriptionDuration = $service->subs_duration;
-            // $newSubs->subs_date = date('Y-m-d H:i:s');
-            // $newSubs->unsubs_date = null;
-            // $newSubs->flag = 'pending';
-            // $newSubs->save();
-            */ 
-            
+
 
             $data = $request->all();
 
@@ -49,13 +36,14 @@ class CallBackController extends Controller
 
 
             // find Get AOC TOken
-            $getAOCToken = GetAOCToken::select()->where('id',$get_a_o_c_token_id)->first();
+            $getAOCToken = GetAOCToken::select()->where('id', $get_a_o_c_token_id)->first();
             $service = Service::where('keyword', $getAOCToken->keyword)->first();
 
+            $callback->keyword = $getAOCToken->keyword;
+            $callback->save();
 
 
-            
-            
+
             $redirect = $service->redirect_url . "?aocTransID=" . $request->aocTransID;
 
             // GET and SET MSISDN
@@ -64,14 +52,26 @@ class CallBackController extends Controller
             $res = $res->json();
 
 
+            
+            
+            
+            
+            
+            $callback->code = $res['code'];
+            $callback->message = $res['data'];
 
-            
-            
-            if($res['code'] == '00'){
+            if ($res['code'] == '00') {
                 $msisdn = $res['data']['msisdn'];
                 $charged = $res['data']['totalAmountCharged'];
 
-                $subs = new Subscriber();
+
+                $subs = Subscriber::where('msisdn', $msisdn)
+                    ->where('keyword', $getAOCToken->keyword)->first();
+
+                if (!$subs) {
+                    $subs = new Subscriber();
+                }
+
                 $subs->keyword = $getAOCToken->keyword;
                 $subs->subscriptionID = $getAOCToken->subscriptionID;
                 $subs->spTransID = $getAOCToken->spTransID;
@@ -104,20 +104,23 @@ class CallBackController extends Controller
                 $chargeLog->type = 'subs';
                 $chargeLog->charge_date = date('Y-m-d');  // Make sure this matches the date format in the database
                 $chargeLog->save();
-                
-                if($msisdn){
-                    $getAOCToken->msisdn = $msisdn;                    
+
+                if ($msisdn) {
+                    $getAOCToken->msisdn = $msisdn;
                     $getAOCToken->isSubscription = true;
+                    $callback->status = 1;
+                    $callback->msisdn = $msisdn;
                 }
-            }else{
-                    $getAOCToken->msisdn = null;                    
-                    $getAOCToken->isSubscription = false;                   
+            } else {
+                $getAOCToken->msisdn = null;
+                $getAOCToken->isSubscription = false;
+                $callback->status = 0;
             }
 
-
+            $callback->save();
             $getAOCToken->save();
-
             return redirect($redirect);
+
         } catch (\Throwable $th) {
             return $this->respondWithError('Server Error', $th->getMessage(), 500);
         }

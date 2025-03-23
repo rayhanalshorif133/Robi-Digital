@@ -102,6 +102,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('customer-log') }}" class="nav-link @if ($routeName == 'customer-log') active @endif">
+                        <i class="nav-icon fa-solid fa-paper-plane"></i>
+                        <p>
+                            Customer Log
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item d-none">
                     <a href="{{ route('hit_log.sent') }}" class="nav-link @if ($routeName == 'hit_log.sent') active @endif">
                         <i class="nav-icon fa-solid fa-paper-plane"></i>
                         <p>
@@ -109,7 +117,7 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item d-none">
                     <a href="{{ route('renew-log.index') }}" class="nav-link @if ($routeName == 'renew-log.index') active @endif">
                         <i class="nav-icon fa-solid fa-repeat"></i>
                         <p>

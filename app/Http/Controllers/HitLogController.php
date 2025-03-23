@@ -7,11 +7,14 @@ use App\Models\ChargeLog;
 use App\Models\HitLog;
 use App\Models\RenewSubscription;
 use App\Models\GetAOCTokenResponse;
+use App\Models\Callback;
+use App\Models\Subscriber;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+use App\Http\Controllers\Api\NDTVController;
 
 
 class HitLogController extends Controller
@@ -20,6 +23,65 @@ class HitLogController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    public function yesterdayLog(Request $request)
+    {
+
+        $startDate = Carbon::parse($request->start_date); // Start date
+        $endDate = Carbon::parse($request->end_date);   // End date
+
+        $data = [];
+
+        for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+
+            $sendOTP = DB::table('hit_logs')
+                ->where('keyword', 'LIKE', 'BDGD')
+                ->whereDate('date', $date->toDateString())
+                ->get()->count();
+
+            $totalBackFromOTP = DB::table('callbacks')
+                ->where('keyword', 'LIKE', 'BDGD')
+                ->whereDate('created_at', $date->toDateString())
+                ->get()->count();
+
+            $otpMatch = DB::table('callbacks')
+                ->where('keyword', 'LIKE', 'BDGD')
+                ->where('status', 1)
+                ->whereDate('created_at', $date->toDateString())
+                ->get()->count();
+
+            $otpFailed = DB::table('callbacks')
+                ->where('keyword', 'LIKE', 'BDGD')
+                ->where('status', 0)
+                ->whereDate('created_at', $date->toDateString())
+                ->get()->count();
+
+            $paymentSuccess = DB::table('charge_logs')
+                ->where('keyword', 'LIKE', 'BDGD')
+                ->where('type', 'LIKE', 'subs')
+                ->whereDate('charge_date', $date->toDateString())
+                ->get()->count();
+
+            $insufficientCredit = DB::table('callbacks')
+                ->where('keyword', 'LIKE', 'BDGD')
+                ->where('code', 'POL1000')
+                ->whereDate('created_at', $date->toDateString())
+                ->get()->count();
+
+            $data[] = [
+                'date' => $date->toDateString(),
+                'sendOTP' => $sendOTP,
+                'totalBackFromOTP' => $totalBackFromOTP,
+                'otpMatch' => $otpMatch,
+                'otpFailed' => $otpFailed,
+                'paymentSuccess' => $paymentSuccess,
+                'insufficientCredit' => $insufficientCredit,
+            ];
+        }
+
+        // Output or process the array
+        return view('hit_log.report_table', compact('data'));
     }
 
 
@@ -92,45 +154,30 @@ class HitLogController extends Controller
     public function checkData()
     {
 
-        dd('it is used for development');
-        $renew = RenewSubscription::select()->where('keyword', 'BDGD')->where('response_code', null)->get();
 
-        foreach ($renew as $item) {
-            $chargeLog  = new ChargeLog();
-            $chargeLog->spTransID = $item->new_spTransID;
-            $chargeLog->msisdn = $item->msisdn;
-            $chargeLog->keyword = $item->keyword;
-            $chargeLog->amount = $item->amount;
-            $chargeLog->type = 'renew';
-            $chargeLog->charge_date = date('Y-m-d');  // Make sure this matches the date format in the database
-            $chargeLog->save();
+
+        dd("Testing data");
+
+
+        $renew_subscriptions = DB::table('renew_subscriptions')
+            ->where('created_at', 'like', '%2025-03-06%')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        foreach ($renew_subscriptions as $renew) {
+
+            $updated = DB::table('subscribers')
+                ->where('msisdn', $renew->msisdn)
+                ->update(['spTransID' => $renew->new_spTransID]);
+
+            if ($updated) {
+                echo "Updated spTransID for msisdn: {$renew->msisdn} with new_spTransID: {$renew->new_spTransID}";
+            } else {
+                echo "No matching subscriber found for msisdn: {$renew->msisdn}";
+            }
         }
 
-        // $hitLogs = HitLog::orderBy('id', 'desc')->with('getAOCToken')
-        //     ->whereBetween('id', [951,1000])
-        //     ->get();
-
-
-
-        // foreach ($hitLogs as $hitLog){
-        //     if(!$hitLog->getAOCToken->msisdn){
-        //         $getAOCToken =  GetAOCToken::select()->where('id', $hitLog->getAOCToken->id)->first();
-        //         $getAOCTokenResponse =  GetAOCTokenResponse::select()->where('get_aoc_token_id', $getAOCToken->id)->first();
-        //         $url = url('api/chargeStatus/' . $getAOCTokenResponse->aocTransID);
-        //         $res = Http::get($url);
-        //         $res = $res->json();
-        //         $hitLog->res = $res;
-        //         if($res['code'] == '00'){
-        //             $msisdn = $res['data']['msisdn'];
-        //             if($msisdn){
-        //                 $getAOCToken->msisdn = $msisdn;
-        //                 Log::info('Msisdn: ' . $msisdn);
-        //                 $getAOCToken->save();
-        //             }
-        //         }
-        //     }
-        // }
-
+        dd('done');
     }
 
 

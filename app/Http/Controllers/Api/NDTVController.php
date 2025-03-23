@@ -24,8 +24,9 @@ class NDTVController extends Controller
 
 
         $request->method() == 'POST' ? $keyword = $request->keyword : $keyword = $keyword;
+        
 
-        if($keyword == null){
+        if ($keyword == null) {
             return  $this->respondWithError("Keyword are required", [
                 'keyword' => 'required',
             ]);
@@ -35,22 +36,28 @@ class NDTVController extends Controller
         $serviceProviderInfo = ServiceProviderInfo::first();
 
 
-       
+
 
         // basedURL
         $subscriptionID = $this->getSubscriptionID();
         $spTransID = $this->getSPTransID();
-       
 
-        
-        
-        
-        
-        
-        
-        
+
+
+
+        $msisdn = '';
+
+        if($request->msisdn){
+            $msisdn = $request->msisdn;
+        }
+
+
+
+
+
         $getAOCToken = new GetAOCToken();
         $getAOCToken->apiKey = $service->api_key;
+        $getAOCToken->msisdn = $msisdn;
         $getAOCToken->username = $service->username;
         $getAOCToken->keyword = $service->keyword;
         $getAOCToken->spTransID = $spTransID;
@@ -66,9 +73,9 @@ class NDTVController extends Controller
         $getAOCToken->subscriptionDuration = $service->subs_duration;
         $getAOCToken->unSubURL = $service->un_sub_url;
         $getAOCToken->save();
-        
+
         $callback = url('callback/' . $getAOCToken->id);
-        
+
         $getAOCToken->callbackURL = $callback;
         $getAOCToken->currency = 'BDT';
         $getAOCToken->amount = $service->charge;
@@ -93,7 +100,7 @@ class NDTVController extends Controller
             'subscriptionDuration' => $service->subs_duration,
             'unSubURL' => $service->un_sub_url,
             'callbackURL' => $callback,
-            'msisdn' => '',
+            'msisdn' => $msisdn,
             'currency' => 'BDT',
             'amount' => $service->charge,
             'operator' => 'Robi',
@@ -105,7 +112,7 @@ class NDTVController extends Controller
         $response = Http::post($serviceProviderInfo->aoc_getAOCToken_url, $tokenInfos);
         $response = json_decode($response);
         if ($response) {
-            
+
             $aocTokenResponse = GetAOCTokenResponse::create([
                 'get_aoc_token_id' => $getAOCToken->id,
                 'aocToken' => $response->data->aocToken,
@@ -137,22 +144,23 @@ class NDTVController extends Controller
             $hitLog->postBack_send_data = json_encode($sendData);
             $hitLog->save();
 
-           
-
             return $this->respondWithSuccess("Token successfully fetched", $sendData);
-            
         } else {
             return $this->respondWithError("Something went wrong!");
         }
     }
 
-   
-    
-    public function redirect($aocTransID){
+
+
+    public function redirect($aocTransID)
+    {
         $serviceProviderInfo = ServiceProviderInfo::first();
         $getAOCTokenResponse = GetAOCTokenResponse::where('aocTransID', $aocTransID)->first();
         $redirectTo = $serviceProviderInfo->aoc_redirection_url . $getAOCTokenResponse->aocToken;
-        return redirect($redirectTo);
+
+        $redirectTo = str_replace('https://', 'http://', $redirectTo);
+        // header('Location: ' . $redirectTo);
+        return redirect()->away($redirectTo);
     }
 
     public function getSubscriptionID()
@@ -164,7 +172,7 @@ class NDTVController extends Controller
         }
         return $getSubscriptionID;
     }
-    
+
     public function getSPTransID()
     {
         $getSPTransID = 'B2M' . $this->generateRandomString(6);
@@ -179,6 +187,16 @@ class NDTVController extends Controller
     {
         $serviceProviderInfo = ServiceProviderInfo::first();
         $getAOCTokenResponse = GetAOCTokenResponse::where('aocTransID', $aocTransID)->first();
+    
+        if(!$getAOCTokenResponse){
+            return response()->json([
+                'status'   => false,
+                'errors'  => true,
+                'message'  => 'Charge status',
+                'data'     => 'Invalid aocTransID'
+            ], 203);
+        }
+
         $getAOCToken = GetAOCToken::where('id', $getAOCTokenResponse->get_aoc_token_id)->first();
         $parameters = [
             'apiKey' => $getAOCToken->apiKey,
@@ -186,18 +204,18 @@ class NDTVController extends Controller
             'username' => $getAOCToken->username
         ];
         $url = $serviceProviderInfo->aoc_endpoint_url . '/chargeStatus';
-        $response = Http::post($url,$parameters);
+        $response = Http::post($url, $parameters);
         $response = json_decode($response);
 
-        
-        if($response->data->errorCode != 00){
+
+        if ($response->data->errorCode != 00) {
             $erroe_msg = $response->data->errorMessage;
             $substringToFind = "Service is deactivated";
-    
+
             if (strpos($erroe_msg, $substringToFind) !== false) {
                 $erroe_msg = 'You cannot subscribe at this moment, your number is blacklisted.';
             }
-    
+
             return response()->json([
                 'status'   => false,
                 'errors'  => true,
@@ -234,9 +252,4 @@ class NDTVController extends Controller
             'data'     => $response->data
         ], 200);
     }
-
-
-
-
-    
 }
